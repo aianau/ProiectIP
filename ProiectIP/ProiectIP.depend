@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1543593051 source:c:\users\andre\desktop\proiectip\proiectip\main.cpp
+	<iostream>
+	<stdlib.h>
+	<time.h>
+	<cstdio>
+	<cstring>
+	<winbgim.h>
+

@@ -3,17 +3,43 @@
 #include <time.h>
 #include <cstdio>
 #include <cstring>
+#include <winbgim.h>
 
 
 using namespace std;
-
+///TODO:
 
 /*
  * IDEE:
  * 1. buton de hint. scor+=20.
  */
 
+ //variabile globale
+unsigned stanga, sus, latura, latime, linie;
+
+//init desen
+void initDesen(unsigned *cifru){
+    latime=300;
+    latura=300/7;
+    stanga=(getmaxx()-latime)/2;
+    sus=100;
+    linie=0;
+
+    for(int i=0; i<7; ++i)
+        rectangle(stanga+i*latura, sus, stanga+(i+1)*latura, sus+latura);
+
+    outtextxy(stanga+latura/2-5, sus+latura/2-5, "C");
+    outtextxy(stanga+latura+latura/2-5, sus+latura/2-5, "M");
+
+    for(int i=0; i<5; ++i){
+        char *cifra;
+        itoa(cifru[i], cifra, 10);
+        outtextxy(stanga+latura*(i+2)+latura/2-5, sus+latura/2-5, cifra);
+    }
+}
+
 //functii folositoare
+
 bool suntEgale(unsigned *cifru, unsigned *cifruDat){
     for(int i=0; i<5; ++i){
         if(cifru[i]!=cifruDat[i])
@@ -27,7 +53,6 @@ void afisCifru(unsigned *cifru){
         cout<<cifru[i]<<" ";
     cout<<"\n";
 }
-
 
 //VARIANTA PC AJUTATOR
 
@@ -61,8 +86,6 @@ unsigned *creareCifru(){
         cifru[i]=*nrSecret;
         estePus[*nrSecret]=1;
     }
-    delete(nrSecret);
-    delete(estePus);
     return cifru;
 }
 
@@ -98,16 +121,50 @@ void calcAjutator(){
             }
         cout<<"elemCentrate: "<<nrElemCentrate<<'\t'<<"elemMutate: "<<nrElemMutate<<"\n";
         scor++;
+
+
+        linie++;
+        for(int i=0; i<7; ++i)
+            rectangle(stanga+i*latura, sus+linie*latura, stanga+(i+1)*latura, sus+latura*(linie+1));
+
+
+        char *elemM, *elemC;
+        elemM=new char[5];
+        elemC=new char[5];
+        itoa(nrElemMutate, elemM, 10);
+        itoa(nrElemCentrate, elemC, 10);
+
+        outtextxy(stanga+latura/2-5, sus+latura*linie+latura/2-5, elemC);
+        outtextxy(stanga+latura+latura/2-5, sus+latura*linie+latura/2-5, elemM);
+
+        for(int i=0; i<5; ++i){
+            char *cifra;
+            cifra=new char[5];
+            itoa(cifru[i], cifra, 10);
+            outtextxy(stanga+latura*(i+2)+latura/2-5, sus+latura*linie+latura/2-5, cifra);
+        }
+
     }while (!suntEgale(cifru, cifruMeu));
 
     cout<<"\n\nfelicita!";
     cout<<"\nscor: "<<scor;
-
 }
+
+
 
 int main() {
 
+    initwindow(800,800);
+
+    unsigned* cifru=new unsigned[5];
+    cifru=creareCifru();
+    initDesen(cifru);
+
     calcAjutator();
+
+
+    getch();
+    closegraph();
 
     return 0;
 }
