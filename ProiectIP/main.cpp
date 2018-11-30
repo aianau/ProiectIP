@@ -1,26 +1,35 @@
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
-#include <chrono>
-#include <unistd.h>
 #include <cstdio>
+#include <cstring>
+
 
 using namespace std;
 
 
-//VARIANTA 2 JUCATORI
 /*
- * A isi alege un cifru pe care B il va ghici
- * B ...........................A ...........
- *
- * Incep turele:
- * A intreaba un cifru, B ii va raspunde sub forma: x m, y c, unde x,y naturale, m = mutate, c=centrate
- * Scorul este numarul de intrebari pana la raspunsul corect.
- *
- *
  * IDEE:
  * 1. buton de hint. scor+=20.
  */
+
+//functii folositoare
+bool suntEgale(unsigned *cifru, unsigned *cifruDat){
+    for(int i=0; i<5; ++i){
+        if(cifru[i]!=cifruDat[i])
+            return 0;
+    }
+    return 1;
+}
+
+void afisCifru(unsigned *cifru){
+    for(int i=0; i<5; ++i)
+        cout<<cifru[i]<<" ";
+    cout<<"\n";
+}
+
+
+//VARIANTA PC AJUTATOR
 
 unsigned *creareCifru(){
     //declarare variabile
@@ -57,23 +66,8 @@ unsigned *creareCifru(){
     return cifru;
 }
 
-bool suntEgale(unsigned *cifru, unsigned *cifruDat){
-    for(int i=0; i<5; ++i){
-        if(cifru[i]!=cifruDat[i])
-            return 0;
-    }
-    return 1;
-}
-
-void afisCifru(unsigned *cifru){
-    for(int i=0; i<5; ++i)
-        cout<<cifru[i]<<" ";
-    cout<<"\n";
-}
-
 void calcAjutator(){
-    unsigned *cifru, *cifruMeu, nrElemCentrate, nrElemMutate;
-
+    unsigned *cifru, *cifruMeu, nrElemCentrate, nrElemMutate, scor=0;
 
     cifru=new unsigned[5];
     cifru=creareCifru();
@@ -83,11 +77,17 @@ void calcAjutator(){
         nrElemCentrate=nrElemMutate=0;
 
         printf("Introduceti cifrul dvs:");
+        char *cifruMeuChar;
+        cifruMeuChar=new char;
+
+        cin>>cifruMeuChar;
+
         for(int i=0; i<5; ++i){
-            cin>>cifruMeu[i];
+            cifruMeu[i]=cifruMeuChar[i]-'0';
             if(cifruMeu[i]==cifru[i])
-                nrElemCentrate++;
-        }
+                nrElemCentrate++;        }
+
+
         for(int i=0; i<5; ++i)
             for(int j=0; j<5; ++j){
                 if(i!=j)
@@ -97,8 +97,11 @@ void calcAjutator(){
                     }
             }
         cout<<"elemCentrate: "<<nrElemCentrate<<'\t'<<"elemMutate: "<<nrElemMutate<<"\n";
+        scor++;
     }while (!suntEgale(cifru, cifruMeu));
 
+    cout<<"\n\nfelicita!";
+    cout<<"\nscor: "<<scor;
 
 }
 
