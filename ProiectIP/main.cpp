@@ -15,26 +15,39 @@ using namespace std;
  */
 
  //variabile globale
-unsigned stanga, sus, latura, latime, linie;
+
+
+unsigned latura, gata=0, latime, linie;
+int scroll;
+
+struct CORD{
+    int x, y;
+}desenCord;
+
+struct BUTON{
+    CORD stSus, drJos;
+}upArrow, downArrow;
+
 
 //init desen
 void initDesen(unsigned *cifru){
     latime=300;
     latura=300/7;
-    stanga=(getmaxx()-latime)/2;
-    sus=100;
+    desenCord.x=(getmaxx()-latime)/2;
+    desenCord.y=100;
     linie=0;
 
     for(int i=0; i<7; ++i)
-        rectangle(stanga+i*latura, sus, stanga+(i+1)*latura, sus+latura);
+        rectangle(desenCord.x+i*latura, desenCord.y, desenCord.x+(i+1)*latura, desenCord.y+latura);
 
-    outtextxy(stanga+latura/2-5, sus+latura/2-5, "C");
-    outtextxy(stanga+latura+latura/2-5, sus+latura/2-5, "M");
+    outtextxy(desenCord.x+latura/2-5, desenCord.y+latura/2-5, "C");
+    outtextxy(desenCord.x+latura+latura/2-5, desenCord.y+latura/2-5, "M");
 
     for(int i=0; i<5; ++i){
         char *cifra;
+        cifra=new char[5];
         itoa(cifru[i], cifra, 10);
-        outtextxy(stanga+latura*(i+2)+latura/2-5, sus+latura/2-5, cifra);
+        outtextxy(desenCord.x+latura*(i+2)+latura/2-5, desenCord.y+latura/2-5, cifra);
     }
 }
 
@@ -119,13 +132,13 @@ void calcAjutator(){
                         break;
                     }
             }
-        cout<<"elemCentrate: "<<nrElemCentrate<<'\t'<<"elemMutate: "<<nrElemMutate<<"\n";
+
         scor++;
 
 
         linie++;
         for(int i=0; i<7; ++i)
-            rectangle(stanga+i*latura, sus+linie*latura, stanga+(i+1)*latura, sus+latura*(linie+1));
+            rectangle(desenCord.x+i*latura, desenCord.y+linie*latura, desenCord.x+(i+1)*latura, desenCord.y+latura*(linie+1));
 
 
         char *elemM, *elemC;
@@ -134,14 +147,14 @@ void calcAjutator(){
         itoa(nrElemMutate, elemM, 10);
         itoa(nrElemCentrate, elemC, 10);
 
-        outtextxy(stanga+latura/2-5, sus+latura*linie+latura/2-5, elemC);
-        outtextxy(stanga+latura+latura/2-5, sus+latura*linie+latura/2-5, elemM);
+        outtextxy(desenCord.x+latura/2-5, desenCord.y+latura*linie+latura/2-5, elemC);
+        outtextxy(desenCord.x+latura+latura/2-5, desenCord.y+latura*linie+latura/2-5, elemM);
 
         for(int i=0; i<5; ++i){
             char *cifra;
             cifra=new char[5];
             itoa(cifru[i], cifra, 10);
-            outtextxy(stanga+latura*(i+2)+latura/2-5, sus+latura*linie+latura/2-5, cifra);
+            outtextxy(desenCord.x+latura*(i+2)+latura/2-5, desenCord.y+latura*linie+latura/2-5, cifra);
         }
 
     }while (!suntEgale(cifru, cifruMeu));
