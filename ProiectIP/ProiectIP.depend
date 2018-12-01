@@ -1,9 +1,10 @@
 # depslib dependency file v1.0
-1543655710 source:c:\users\andre\desktop\proiectip\proiectip\main.cpp
+1543691550 source:c:\users\andre\desktop\proiectip\proiectip\main.cpp
 	<iostream>
 	<stdlib.h>
 	<time.h>
 	<cstdio>
 	<cstring>
 	<winbgim.h>
+	<cmath>
 
