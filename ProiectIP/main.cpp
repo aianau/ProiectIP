@@ -5,6 +5,8 @@
 #include <cstring>
 #include <winbgim.h>
 #include <cmath>
+#include <conio.h>
+
 using namespace std;
 
 /*
@@ -22,12 +24,12 @@ struct CORD{
 struct BUTON{
     CORD stSus, drJos;
 }upArrow, downArrow, zero, unu, doi, trei, patru, cinci, sase, sapte, opt, noua;
+BUTON exitt, playerVsPcButton, playerVsPlayerButton;
 //acestea sunt toate butoanele pe care le vom folosi. daca deschizi consola, vei vedea la ce ma refer.
 
-
  //variabile globale
-unsigned latura, gata, latime, linie;
-//gata-flag pt cand jocul s-a terminat.
+unsigned latura, gataPlayerVsPC, gataGame, latime, linie;
+//gataPlayerVsPC-flag pt cand jocul s-a terminat.
 //linie - sa stim pe ce linie ne aflam in jocul nostru.
 int scroll;
 //scroll-ul il folosim pentru a implementa "scroll buttons". cele de sus stanga din consola.
@@ -102,15 +104,8 @@ void drawGUIInputNumber(){
     outtextxy(140,200, "9");
 }
 
-//init desen
-void initDesen(){
-    latime=300;
-    latura=300/7;
-    desenCord.x=(getmaxx()-latime)/2;
-    desenCord.y=100;
-    linie=0;
-    scroll=100;
-
+//desenare piese auxiliare.
+void initDesenAuxiliaryButtons(){
     //coordonate sageti
     initCordButton(upArrow, 10, 10, 30, 30);
     initCordButton(downArrow, 10, 35, 30, 55);
@@ -120,22 +115,16 @@ void initDesen(){
 
     //coordonate butoane cu numere si desenarea lor.
     drawGUIInputNumber();
+}
 
-    //desenare linie 0
-    for(int linieTemp=0; linieTemp<2; ++linieTemp)
-        rectangle(desenCord.x+linieTemp*latura, desenCord.y,
-                   desenCord.x+(linieTemp+1)*latura, desenCord.y+latura);
-
-    outtextxy(desenCord.x+latura/2-5, desenCord.y+latura/2-5, "C");
-    outtextxy(desenCord.x+latura+latura/2-5, desenCord.y+latura/2-5, "M");
-
-    //pregatesc noul teren pt prima linie in care utilizatorul pune cifre.
-    linie++;
-    for(int j=0; j<7; ++j){
-        rectangle(desenCord.x+latura*j, desenCord.y+latura*linie,
-                   desenCord.x+latura*(j+1), desenCord.y+latura*(linie+1));
-    }
-
+//init desen
+void initDesen(){
+    latime=300;
+    latura=300/7;
+    desenCord.x=(getmaxx()-latime)/2;
+    desenCord.y=100;
+    linie=0;
+    scroll=100;
 }
 
 //functii folositoare
@@ -225,7 +214,7 @@ bool checkPunere(unsigned cifra, unsigned linieMat[], unsigned nrElem){
 //updata jocul, la fiecare secunda.
 //de fiecare data cand vom desena ceva, vom desena in functie de desenCord.y (care se va schimba daca
 //vreau sa implementez butoanele de scroll).
-void update(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[1000][7]){
+void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[1000][7]){
 
     //daca utilizatorul a ales 5 cifre, i se va updata C si M in tabel.
     if(pozCifra==7){
@@ -262,7 +251,7 @@ void update(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[1000][7]){
         if(suntEgale(cifru, (matCifru[linie]+2))){
             outtextxy(getmaxx()-100, 100, "FELICITARI");
             Sleep(5);
-            gata=1;
+            gataPlayerVsPC=1;
             ///TODO: Enter Main Menu.
         }
         else{
@@ -545,8 +534,44 @@ void update(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[1000][7]){
     }
 }
 
+void initDesenPlayerVsPc(){
 
-void calcAjutator(){
+    //desenare linie 0
+    for(int linieTemp=0; linieTemp<2; ++linieTemp)
+        rectangle(desenCord.x+linieTemp*latura, desenCord.y,
+                   desenCord.x+(linieTemp+1)*latura, desenCord.y+latura);
+
+    outtextxy(desenCord.x+latura/2-5, desenCord.y+latura/2-5, "C");
+    outtextxy(desenCord.x+latura+latura/2-5, desenCord.y+latura/2-5, "M");
+
+    //pregatesc noul teren pt prima linie in care utilizatorul pune cifre.
+    linie++;
+    for(int j=0; j<7; ++j){
+        rectangle(desenCord.x+latura*j, desenCord.y+latura*linie,
+                   desenCord.x+latura*(j+1), desenCord.y+latura*(linie+1));
+    }
+
+}
+
+void initDesenMenu(){
+    initCordButton(exitt, getmaxx()/2-50, getmaxy()/2+50, getmaxx()/2+50,  getmaxy()/2+100);
+    drawButton(exitt);
+    outtextxy(exitt.stSus.x+35, exitt.stSus.y+20, "Exit");
+
+    initCordButton(playerVsPcButton, getmaxx()/2-100, getmaxy()/2-50, getmaxx()/2+100,  getmaxy()/2);
+    drawButton(playerVsPcButton);
+    outtextxy(playerVsPcButton.stSus.x+35, playerVsPcButton.stSus.y+20, "Player vs PC");
+}
+
+
+void playerVsPC(){
+
+    //desenare auxiliary buttons
+    initDesenAuxiliaryButtons();
+
+    //desenare playerVsPC graphic.
+    initDesenPlayerVsPc();
+
     //variabile
     unsigned *cifru, *cifruMeu, nrElemCentrate, nrElemMutate, scor=0, pozCifra=2, matCifru[1000][7]={};
 
@@ -562,23 +587,54 @@ void calcAjutator(){
 
     //do pana cand nu e gata jocul.
     do{
-        update(cifru, pozCifra, matCifru);
-    }while (!gata && !suntEgale(cifru, (matCifru[linie]+2)));
+        updatePlayerVsPC(cifru, pozCifra, matCifru);
+    }while (!gataPlayerVsPC && !suntEgale(cifru, (matCifru[linie]+2)));
+
+    initDesenMenu();
 
 }
 
+
+void updateGame(){
+    if(ismouseclick(WM_LBUTTONDOWN)){
+        clearmouseclick(WM_LBUTTONDOWN);
+
+        CORD mouse;
+        mouse.x=mousex();
+        mouse.y=mousey();
+
+        if(isButonClicked(mouse, exitt)){
+            gataGame=1;
+        }
+
+        if(isButonClicked(mouse, playerVsPcButton)){
+            setcolor(BLACK);
+            initDesenMenu();
+            setcolor(WHITE);
+            playerVsPC();
+        }
+
+    }
+}
 
 
 int main() {
 
     initwindow(1500,1270);
 
+    initDesenMenu();
+
+    do{
+        updateGame();
+    }while(!gataGame);
+
+/*
     //desenam inceputul si toate cele
     initDesen();
 
     //versiunea player VS PC
-    calcAjutator();
-
+    playerVsPC();
+*/
     getch();
     closegraph();
 

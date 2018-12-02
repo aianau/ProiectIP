@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1543744333 source:c:\users\andre\desktop\proiectip\proiectip\main.cpp
+1543755903 source:c:\users\andre\desktop\proiectip\proiectip\main.cpp
 	<iostream>
 	<stdlib.h>
 	<time.h>
@@ -7,4 +7,5 @@
 	<cstring>
 	<winbgim.h>
 	<cmath>
+	<conio.h>
 
