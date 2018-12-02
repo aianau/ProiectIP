@@ -183,24 +183,30 @@ unsigned *creareCifru(){
 
 void blinkMessage(int x, int y, char *text){
     outtextxy(x, y, text);
-    Sleep(500);
+    Sleep(300);
     setcolor(BLACK);
     outtextxy(x, y, text);
-    Sleep(200);
+    Sleep(150);
     setcolor(WHITE);
     outtextxy(x, y, text);
-    Sleep(500);
+    Sleep(300);
     setcolor(BLACK);
     outtextxy(x, y, text);
-    Sleep(200);
+    Sleep(150);
     setcolor(WHITE);
     outtextxy(x, y, text);
-    Sleep(500);
+    Sleep(300);
     setcolor(BLACK);
     outtextxy(x, y, text);
-    Sleep(200);
+    Sleep(150);
     setcolor(WHITE);
 
+}
+
+bool checkPunere(unsigned cifra, unsigned linieMat[], unsigned nrElem){
+    for(int i=2; i<=nrElem; ++i)
+        if(linieMat[i]==cifra) return 1;
+    return 0;
 }
 
 void update(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[1000][7]){
@@ -392,85 +398,125 @@ void update(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[1000][7]){
             if(pozCifra==2){
                 blinkMessage(getmaxx()-300, 200, "APASATI ALTA CIFRA");
             }else{
-                //bag in matrice
-                matCifru[linie][pozCifra]=0;
-                //desenez
-                outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "0");
-                //increment pozitie cifra
-                pozCifra++;
+                if(checkPunere(0, matCifru[linie], pozCifra-1)){
+                    blinkMessage(getmaxx()-300, 200, "CIFRA A MAI FOST PUSA");
+                }else {
+                    //bag in matrice
+                    matCifru[linie][pozCifra]=0;
+                    //desenez
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "0");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
             }
         }
         if(isButonClicked(mouse, unu)){
-            //bag in matrice
-            matCifru[linie][pozCifra]=1;
-            //desenez
-            outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "1");
-            //increment pozitie cifra
-            pozCifra++;
+            if(checkPunere(1, matCifru[linie], pozCifra-1)){
+                    blinkMessage(getmaxx()-300, 200, "CIFRA A MAI FOST PUSA");
+                }else {
+                    //bag in matrice
+                    matCifru[linie][pozCifra]=1;
+                    //desenez
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "1");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
         }
         if(isButonClicked(mouse, doi)){
-            //bag in matrice
-            matCifru[linie][pozCifra]=2;
-            //desenez
-            outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "2");
-            //increment pozitie cifra
-            pozCifra++;
+            if(checkPunere(2, matCifru[linie], pozCifra-1)){
+                    blinkMessage(getmaxx()-300, 200, "CIFRA A MAI FOST PUSA");
+                }else {
+                    //bag in matrice
+                    matCifru[linie][pozCifra]=2;
+                    //desenez
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "2");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
         }
         if(isButonClicked(mouse, trei)){
-            //bag in matrice
-            matCifru[linie][pozCifra]=3;
-            //desenez
-            outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "3");
-            //increment pozitie cifra
-            pozCifra++;
+            if(checkPunere(3, matCifru[linie], pozCifra-1)){
+                    blinkMessage(getmaxx()-300, 200, "CIFRA A MAI FOST PUSA");
+                }else {
+                    //bag in matrice
+                    matCifru[linie][pozCifra]=3;
+                    //desenez
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "3");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
         }
         if(isButonClicked(mouse, patru)){
-            //bag in matrice
-            matCifru[linie][pozCifra]=4;
-            //desenez
-            outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "4");
-            //increment pozitie cifra
-            pozCifra++;
+            if(checkPunere(4, matCifru[linie], pozCifra-1)){
+                    blinkMessage(getmaxx()-300, 200, "CIFRA A MAI FOST PUSA");
+                }else {
+                    //bag in matrice
+                    matCifru[linie][pozCifra]=4;
+                    //desenez
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "4");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
         }
         if(isButonClicked(mouse, cinci)){
-            //bag in matrice
-            matCifru[linie][pozCifra]=5;
-            //desenez
-            outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "5");
-            //increment pozitie cifra
-            pozCifra++;
+            if(checkPunere(5, matCifru[linie], pozCifra-1)){
+                    blinkMessage(getmaxx()-300, 200, "CIFRA A MAI FOST PUSA");
+                }else {
+                    //bag in matrice
+                    matCifru[linie][pozCifra]=5;
+                    //desenez
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "5");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
         }
         if(isButonClicked(mouse, sase)){
-            //bag in matrice
-            matCifru[linie][pozCifra]=6;
-            //desenez
-            outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "6");
-            //increment pozitie cifra
-            pozCifra++;
+            if(checkPunere(6, matCifru[linie], pozCifra-1)){
+                    blinkMessage(getmaxx()-300, 200, "CIFRA A MAI FOST PUSA");
+                }else {
+                    //bag in matrice
+                    matCifru[linie][pozCifra]=6;
+                    //desenez
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "6");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
         }
         if(isButonClicked(mouse, sapte)){
-            //bag in matrice
-            matCifru[linie][pozCifra]=7;
-            //desenez
-            outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "7");
-            //increment pozitie cifra
-            pozCifra++;
+            if(checkPunere(7, matCifru[linie], pozCifra-1)){
+                    blinkMessage(getmaxx()-300, 200, "CIFRA A MAI FOST PUSA");
+                }else {
+                    //bag in matrice
+                    matCifru[linie][pozCifra]=7;
+                    //desenez
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "7");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
         }
         if(isButonClicked(mouse, opt)){
-            //bag in matrice
-            matCifru[linie][pozCifra]=8;
-            //desenez
-            outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "8");
-            //increment pozitie cifra
-            pozCifra++;
+            if(checkPunere(8, matCifru[linie], pozCifra-1)){
+                    blinkMessage(getmaxx()-300, 200, "CIFRA A MAI FOST PUSA");
+                }else {
+                    //bag in matrice
+                    matCifru[linie][pozCifra]=8;
+                    //desenez
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "8");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
         }
         if(isButonClicked(mouse, noua)){
-            //bag in matrice
-            matCifru[linie][pozCifra]=9;
-            //desenez
-            outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "9");
-            //increment pozitie cifra
-            pozCifra++;
+            if(checkPunere(9, matCifru[linie], pozCifra-1)){
+                    blinkMessage(getmaxx()-300, 200, "CIFRA A MAI FOST PUSA");
+                }else {
+                    //bag in matrice
+                    matCifru[linie][pozCifra]=9;
+                    //desenez
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "9");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
         }
 
     }
