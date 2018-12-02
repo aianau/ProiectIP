@@ -12,10 +12,7 @@ using namespace std;
  * 1. buton de hint. scor+=20.
  */
 
- //variabile globale
-unsigned latura, gata, latime, linie;
-int scroll;
-
+ //structuri
 struct CORD{
     int x, y;
 }desenCord;
@@ -24,6 +21,10 @@ struct BUTON{
     CORD stSus, drJos;
 }upArrow, downArrow, zero, unu, doi, trei, patru, cinci, sase, sapte, opt, noua;
 
+
+ //variabile globale
+unsigned latura, gata, latime, linie;
+int scroll;
 
 void drawButton(BUTON buton){
     rectangle(buton.stSus.x, buton.stSus.y, buton.drJos.x, buton.drJos.y);
@@ -36,20 +37,7 @@ void initCordButton(BUTON &buton, int x1, int y1, int x2, int y2){
     buton.drJos.y=y2;
 }
 
-//init desen
-void initDesen(){
-    latime=300;
-    latura=300/7;
-    desenCord.x=(getmaxx()-latime)/2;
-    desenCord.y=100;
-    linie=0;
-    scroll=100;
-
-    //coordonate sageti
-    initCordButton(upArrow, 10, 10, 30, 30);
-    initCordButton(downArrow, 10, 35, 30, 55);
-
-    //desenare sageti
+void drawScrollArrows(){
     drawButton(upArrow);
     line(upArrow.stSus.x+10, upArrow.stSus.y+5, upArrow.stSus.x+10, upArrow.stSus.y+15);
     line(upArrow.stSus.x+5, upArrow.stSus.y+10, upArrow.stSus.x+10, upArrow.stSus.y+5);
@@ -59,8 +47,9 @@ void initDesen(){
     line(downArrow.stSus.x+10, downArrow.stSus.y+5, downArrow.stSus.x+10, downArrow.stSus.y+15);
     line(downArrow.stSus.x+5, downArrow.stSus.y+10, downArrow.stSus.x+10, downArrow.stSus.y+15);
     line(downArrow.stSus.x+15, downArrow.stSus.y+10, downArrow.stSus.x+10, downArrow.stSus.y+15);
+}
 
-    //coordonate butoane cu numere si desenarea lor.
+void drawGUIInputNumber(){
     initCordButton(zero, 100, 100, 130, 130);
     drawButton(zero);
     outtextxy(110,110, "0");
@@ -100,11 +89,31 @@ void initDesen(){
     initCordButton(noua, 130, 190, 160, 220);
     drawButton(noua);
     outtextxy(140,200, "9");
+}
 
+//init desen
+void initDesen(){
+    latime=300;
+    latura=300/7;
+    desenCord.x=(getmaxx()-latime)/2;
+    desenCord.y=100;
+    linie=0;
+    scroll=100;
 
-    for(int i=0; i<2; ++i)
-        rectangle(desenCord.x+i*latura, desenCord.y,
-                   desenCord.x+(i+1)*latura, desenCord.y+latura);
+    //coordonate sageti
+    initCordButton(upArrow, 10, 10, 30, 30);
+    initCordButton(downArrow, 10, 35, 30, 55);
+
+    //desenare sageti
+    drawScrollArrows();
+
+    //coordonate butoane cu numere si desenarea lor.
+    drawGUIInputNumber();
+
+    //desenare linie 0
+    for(int linieTemp=0; linieTemp<2; ++linieTemp)
+        rectangle(desenCord.x+linieTemp*latura, desenCord.y,
+                   desenCord.x+(linieTemp+1)*latura, desenCord.y+latura);
 
     outtextxy(desenCord.x+latura/2-5, desenCord.y+latura/2-5, "C");
     outtextxy(desenCord.x+latura+latura/2-5, desenCord.y+latura/2-5, "M");
@@ -172,6 +181,28 @@ unsigned *creareCifru(){
     return cifru;
 }
 
+void blinkMessage(int x, int y, char *text){
+    outtextxy(x, y, text);
+    Sleep(500);
+    setcolor(BLACK);
+    outtextxy(x, y, text);
+    Sleep(200);
+    setcolor(WHITE);
+    outtextxy(x, y, text);
+    Sleep(500);
+    setcolor(BLACK);
+    outtextxy(x, y, text);
+    Sleep(200);
+    setcolor(WHITE);
+    outtextxy(x, y, text);
+    Sleep(500);
+    setcolor(BLACK);
+    outtextxy(x, y, text);
+    Sleep(200);
+    setcolor(WHITE);
+
+}
+
 void update(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[1000][7]){
 
     //daca utilizatorul a ales 5 cifre, i se va updata C si M in tabel.
@@ -209,6 +240,7 @@ void update(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[1000][7]){
         if(suntEgale(cifru, (matCifru[linie]+2))){
             outtextxy(getmaxx()-100, 100, "FELICITARI");
             Sleep(5);
+            gata=1;
             ///TODO: Enter Main Menu.
         }
         else{
@@ -238,11 +270,16 @@ void update(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[1000][7]){
             //stergere
             setcolor(BLACK);
 
-
+            //linia 0
             outtextxy(desenCord.x+latura/2-5, desenCord.y+latura/2-5, "C");
             outtextxy(desenCord.x+latura+latura/2-5, desenCord.y+latura/2-5, "M");
 
-
+            for(int linieTemp=-5; linieTemp<=5; ++linieTemp){
+                rectangle(desenCord.x, desenCord.y+linieTemp*latura,
+                      desenCord.x+latura, desenCord.y+(linieTemp+1)*latura);
+                rectangle(desenCord.x+latura, desenCord.y+linieTemp*latura,
+                      desenCord.x+latura*2, desenCord.y+(linieTemp+1)*latura);
+            }
 
             //restul liniilor
             for(int i=1; i<=linie; ++i)
@@ -252,7 +289,7 @@ void update(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[1000][7]){
                     char *cifra;
                     cifra=new char[5];
                     itoa(matCifru[i][j], cifra, 10);
-                    outtextxy(desenCord.x+latura*j+latura/2-5, desenCord.y+latura/2-5, cifra);
+                    outtextxy(desenCord.x+latura*j+latura/2-5, desenCord.y+latura*i+latura/2-5, cifra);
                 }
 
             //update la coordonata desenului pe y.
@@ -261,16 +298,31 @@ void update(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[1000][7]){
             //desenare la loc.
             setcolor(WHITE);
 
-            //prima linie.
-            for(int j=0; j<7; ++j)
-                rectangle(desenCord.x+j*latura, desenCord.y+linie*latura,
-                        desenCord.x+(j+1)*latura, desenCord.y+latura*(linie+1));
-
+            //linia 0
             outtextxy(desenCord.x+latura/2-5, desenCord.y+latura/2-5, "C");
             outtextxy(desenCord.x+latura+latura/2-5, desenCord.y+latura/2-5, "M");
 
-            //restul liniilor....
-            ///TODO: nu prea merge de aici.. deci nu isi are rostul sa faci din cod aici. tb sa refaci cateva chesstiii.
+            rectangle(desenCord.x, desenCord.y,
+                      desenCord.x+latura, desenCord.y+latura);
+            rectangle(desenCord.x+latura, desenCord.y,
+                      desenCord.x+latura*2, desenCord.y+latura);
+
+            //restul liniilor
+            for(int i=1; i<=linie; ++i)
+                for(int j=0; j<7; ++j){
+                    rectangle(desenCord.x+latura*j, desenCord.y+latura*i,
+                              desenCord.x+latura*(j+1), desenCord.y+latura*(i+1));
+                    //daca sunt pe ultima linie si am numarul 0 in matrice si trebuie sa umplu patratul
+                    //in care jucatorul nu a pus un numar sau patratul cu C si M de pe ultima linie,
+                    //inseamna ca acolo trebuie sa fie gol. deci acolo nu rescriu nimic.
+                    if(i==linie && matCifru[i][j]==0 && (j>=pozCifra||j==0||j==1)){
+                    }else{
+                        char *cifra;
+                        cifra=new char[5];
+                        itoa(matCifru[i][j], cifra, 10);
+                        outtextxy(desenCord.x+latura*j+latura/2-5, desenCord.y+latura*i+latura/2-5, cifra);
+                    }
+                }
         }
 
         if(isButonClicked(mouse, downArrow)){
@@ -279,20 +331,16 @@ void update(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[1000][7]){
             //stergere
             setcolor(BLACK);
 
-            ///TODO: aici nu imi sterge box-urile de la C,M dupa ce trec de prima linie. deci trec de prima linie
-            ///si "linie" imi ramane in urma si de aia nu pot sterge boxurile. cred..
             //linia 0
             outtextxy(desenCord.x+latura/2-5, desenCord.y+latura/2-5, "C");
             outtextxy(desenCord.x+latura+latura/2-5, desenCord.y+latura/2-5, "M");
-            outtextxy(desenCord.x+latura/2-5, desenCord.y-latura*2+latura/2-5, "C");
-            outtextxy(desenCord.x+latura+latura/2-5, desenCord.y-latura*2+latura/2-5, "M");
-            outtextxy(desenCord.x+latura/2-5, desenCord.y+latura+latura/2-5, "C");
-            outtextxy(desenCord.x+latura+latura/2-5, desenCord.y+latura+latura/2-5, "M");
 
-            rectangle(desenCord.x, desenCord.y+(linie-1)*latura,
-                      desenCord.x+latura, desenCord.y+linie*latura);
-            rectangle(desenCord.x+latura, desenCord.y+(linie-1)*latura,
-                      desenCord.x+latura*2, desenCord.y+linie*latura);
+            for(int linieTemp=-10; linieTemp<=10; ++linieTemp){
+                rectangle(desenCord.x, desenCord.y+linieTemp*latura,
+                      desenCord.x+latura, desenCord.y+(linieTemp+1)*latura);
+                rectangle(desenCord.x+latura, desenCord.y+linieTemp*latura,
+                      desenCord.x+latura*2, desenCord.y+(linieTemp+1)*latura);
+            }
 
             //restul liniilor
             for(int i=1; i<=linie; ++i)
@@ -315,34 +363,42 @@ void update(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[1000][7]){
             outtextxy(desenCord.x+latura/2-5, desenCord.y+latura/2-5, "C");
             outtextxy(desenCord.x+latura+latura/2-5, desenCord.y+latura/2-5, "M");
 
-            rectangle(desenCord.x, desenCord.y+(linie-1)*latura,
-                      desenCord.x+latura, desenCord.y+linie*latura);
-            rectangle(desenCord.x+latura, desenCord.y+(linie-1)*latura,
-                      desenCord.x+latura*2, desenCord.y+linie*latura);
+            rectangle(desenCord.x, desenCord.y,
+                      desenCord.x+latura, desenCord.y+latura);
+            rectangle(desenCord.x+latura, desenCord.y,
+                      desenCord.x+latura*2, desenCord.y+latura);
 
             //restul liniilor
             for(int i=1; i<=linie; ++i)
                 for(int j=0; j<7; ++j){
                     rectangle(desenCord.x+latura*j, desenCord.y+latura*i,
                               desenCord.x+latura*(j+1), desenCord.y+latura*(i+1));
-                    char *cifra;
-                    cifra=new char[5];
-                    itoa(matCifru[i][j], cifra, 10);
-                    outtextxy(desenCord.x+latura*j+latura/2-5, desenCord.y+latura*i+latura/2-5, cifra);
+                    //daca sunt pe ultima linie si am numarul 0 in matrice si trebuie sa umplu patratul
+                    //in care jucatorul nu a pus un numar sau patratul cu C si M de pe ultima linie,
+                    //inseamna ca acolo trebuie sa fie gol. deci acolo nu rescriu nimic.
+                    if(i==linie && matCifru[i][j]==0 && (j>=pozCifra||j==0||j==1)){
+                    }else{
+                        char *cifra;
+                        cifra=new char[5];
+                        itoa(matCifru[i][j], cifra, 10);
+                        outtextxy(desenCord.x+latura*j+latura/2-5, desenCord.y+latura*i+latura/2-5, cifra);
+                    }
                 }
-
-
-
         }
 
         //daca utilizatorul apasa pe unul dintre acele butoane.
         if(isButonClicked(mouse, zero)){
-            //bag in matrice
-            matCifru[linie][pozCifra]=0;
-            //desenez
-            outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "0");
-            //increment pozitie cifra
-            pozCifra++;
+            //daca e pe prima pozitie, arata eroare
+            if(pozCifra==2){
+                blinkMessage(getmaxx()-300, 200, "APASATI ALTA CIFRA");
+            }else{
+                //bag in matrice
+                matCifru[linie][pozCifra]=0;
+                //desenez
+                outtextxy(desenCord.x+pozCifra*latura+latura/2-5, desenCord.y+linie*latura+latura/2-5, "0");
+                //increment pozitie cifra
+                pozCifra++;
+            }
         }
         if(isButonClicked(mouse, unu)){
             //bag in matrice
@@ -438,7 +494,7 @@ void calcAjutator(){
     //do pana cand nu e gata jocul.
     do{
         update(cifru, pozCifra, matCifru);
-    }while (!suntEgale(cifru, (matCifru[linie]+2)));
+    }while (!gata && !suntEgale(cifru, (matCifru[linie]+2)));
 
 }
 
