@@ -13,23 +13,32 @@ using namespace std;
  */
 
  //structuri
+ //fiindca vom lucra in coordonate x, y, am ales sa fac o structura care are x si y.
 struct CORD{
     int x, y;
-}desenCord;
+}desenCord; //desenCord este de fapt coordonata stanga sus de la care exista desenul nostru.
 
+//o structura prin care definesc un buton. acest buton va avea doua coordonate esentiale. Stanga sus si dreaptaJos.
 struct BUTON{
     CORD stSus, drJos;
 }upArrow, downArrow, zero, unu, doi, trei, patru, cinci, sase, sapte, opt, noua;
+//acestea sunt toate butoanele pe care le vom folosi. daca deschizi consola, vei vedea la ce ma refer.
 
 
  //variabile globale
 unsigned latura, gata, latime, linie;
+//gata-flag pt cand jocul s-a terminat.
+//linie - sa stim pe ce linie ne aflam in jocul nostru.
 int scroll;
+//scroll-ul il folosim pentru a implementa "scroll buttons". cele de sus stanga din consola.
 
+//functie ce imi deseneaza un buton. gandeste ca fiecare functie cu parametru GENERAL pe care o facem este pentru ca
+//o vom folosi de mai multe ori.
 void drawButton(BUTON buton){
     rectangle(buton.stSus.x, buton.stSus.y, buton.drJos.x, buton.drJos.y);
 }
 
+//initializam coordonatele unui buton.
 void initCordButton(BUTON &buton, int x1, int y1, int x2, int y2){
     buton.stSus.x=x1;
     buton.stSus.y=y1;
@@ -37,6 +46,7 @@ void initCordButton(BUTON &buton, int x1, int y1, int x2, int y2){
     buton.drJos.y=y2;
 }
 
+//self explanatory
 void drawScrollArrows(){
     drawButton(upArrow);
     line(upArrow.stSus.x+10, upArrow.stSus.y+5, upArrow.stSus.x+10, upArrow.stSus.y+15);
@@ -49,6 +59,7 @@ void drawScrollArrows(){
     line(downArrow.stSus.x+15, downArrow.stSus.y+10, downArrow.stSus.x+10, downArrow.stSus.y+15);
 }
 
+//desenam graphic user interface input (adica tastatura cu cifre)
 void drawGUIInputNumber(){
     initCordButton(zero, 100, 100, 130, 130);
     drawButton(zero);
@@ -128,6 +139,7 @@ void initDesen(){
 }
 
 //functii folositoare
+//daca doi vectori sunt egali.
 bool suntEgale(unsigned *cifru, unsigned *cifru1){
     for(int i=0; i<5; ++i){
         if(cifru[i]!=cifru1[i])
@@ -142,28 +154,32 @@ void afisCifru(unsigned *cifru){
     cout<<"\n";
 }
 
+//daca un buton este apasat.
 bool isButonClicked(CORD mouse, BUTON buton){
     return(buton.stSus.x<mouse.x && mouse.x<buton.drJos.x &&
            buton.stSus.y<mouse.y && mouse.y<buton.drJos.y);
 }
 
 //VARIANTA PC AJUTATOR
+//functie care imi returneaza un cifru random
 unsigned *creareCifru(){
     //declarare variabile
     unsigned *cifru, *estePus;
     cifru=new unsigned[5];
     estePus=new unsigned[9];
 
+    //vector care estePus[i]=1 daca cifra i e pusa, si =0 daca nu e pusa.
     for(int i=0; i<10; ++i)
         estePus[i]=0;
 
+    //magie care ne face sa avem un random cu adevarat random.
     /* initialize random seed: */
     srand (time(NULL));
 
     //generez un nr intre 1 si 9 pt pozitia 1
     unsigned *nrSecret;
     nrSecret=new unsigned;
-    *nrSecret=(unsigned )(rand()%9)+1;
+    *nrSecret=(unsigned)(rand()%9)+1;
     cifru[0]=*nrSecret;
     estePus[*nrSecret]=1;
 
@@ -181,6 +197,7 @@ unsigned *creareCifru(){
     return cifru;
 }
 
+//functie ce la coordonata x,y imi afiseaza text clipind.
 void blinkMessage(int x, int y, char *text){
     outtextxy(x, y, text);
     Sleep(300);
@@ -194,21 +211,20 @@ void blinkMessage(int x, int y, char *text){
     outtextxy(x, y, text);
     Sleep(150);
     setcolor(WHITE);
-    outtextxy(x, y, text);
-    Sleep(300);
-    setcolor(BLACK);
-    outtextxy(x, y, text);
-    Sleep(150);
-    setcolor(WHITE);
-
 }
 
+//returneaza 1 daca cifra a mai fost pus in vectorul linieMat[] (o vom apela ca fix pt ultima linie), avand "nrElem" elemente
 bool checkPunere(unsigned cifra, unsigned linieMat[], unsigned nrElem){
     for(int i=2; i<=nrElem; ++i)
         if(linieMat[i]==cifra) return 1;
     return 0;
 }
 
+//acest update va fi constant. gandeste ca va rula la infinit
+//pana cand jocul sa termina. acesta va verifica daca un buton este apasat si atunci imi va
+//updata jocul, la fiecare secunda.
+//de fiecare data cand vom desena ceva, vom desena in functie de desenCord.y (care se va schimba daca
+//vreau sa implementez butoanele de scroll).
 void update(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[1000][7]){
 
     //daca utilizatorul a ales 5 cifre, i se va updata C si M in tabel.
@@ -263,14 +279,20 @@ void update(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[1000][7]){
         }
     }
 
+    //daca butonul este apasat
     if(ismouseclick(WM_LBUTTONDOWN)){
+        //eliberam "mouse"-ul. asa facea proful, am vazut si am scris la fel si a mers.
         clearmouseclick(WM_LBUTTONDOWN);
 
+        //retinem coordonatele mouse-ului unde a dat click.
         CORD mouse;
         mouse.x=mousex();
         mouse.y=mousey();
 
+        //daca este apasata vreo sageata.
+
         if(isButonClicked(mouse, upArrow)){
+            //scrollul trece pe minus pentru a updata desenCord.
             scroll=-abs(scroll);
 
             //stergere
@@ -398,6 +420,7 @@ void update(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[1000][7]){
             if(pozCifra==2){
                 blinkMessage(getmaxx()-300, 200, "APASATI ALTA CIFRA");
             }else{
+                //daca cifra a mai fost pusa
                 if(checkPunere(0, matCifru[linie], pozCifra-1)){
                     blinkMessage(getmaxx()-300, 200, "CIFRA A MAI FOST PUSA");
                 }else {
@@ -550,10 +573,10 @@ int main() {
 
     initwindow(1500,1270);
 
-    unsigned* cifru=new unsigned[5];
-    cifru=creareCifru();
+    //desenam inceputul si toate cele
     initDesen();
 
+    //versiunea player VS PC
     calcAjutator();
 
     getch();
