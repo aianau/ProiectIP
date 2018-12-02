@@ -24,7 +24,7 @@ struct CORD{
 struct BUTON{
     CORD stSus, drJos;
 }upArrow, downArrow, zero, unu, doi, trei, patru, cinci, sase, sapte, opt, noua;
-BUTON exitt, playerVsPcButton, playerVsPlayerButton;
+BUTON exitMenu, playerVsPcButton, playerVsPlayerButton, exitPlayerVsPc;
 //acestea sunt toate butoanele pe care le vom folosi. daca deschizi consola, vei vedea la ce ma refer.
 
  //variabile globale
@@ -115,16 +115,11 @@ void initDesenAuxiliaryButtons(){
 
     //coordonate butoane cu numere si desenarea lor.
     drawGUIInputNumber();
-}
 
-//init desen
-void initDesen(){
-    latime=300;
-    latura=300/7;
-    desenCord.x=(getmaxx()-latime)/2;
-    desenCord.y=100;
-    linie=0;
-    scroll=100;
+    //coordonata btn exitPlayerVsPc
+    initCordButton(exitPlayerVsPc, 30, getmaxy()/2+100, 150, getmaxy()/2+130);
+    drawButton(exitPlayerVsPc);
+    outtextxy(exitPlayerVsPc.stSus.x+10, exitPlayerVsPc.stSus.y+10, "To Main Menu");
 }
 
 //functii folositoare
@@ -207,6 +202,16 @@ bool checkPunere(unsigned cifra, unsigned linieMat[], unsigned nrElem){
     for(int i=2; i<=nrElem; ++i)
         if(linieMat[i]==cifra) return 1;
     return 0;
+}
+
+void initDesenMenu(){
+    initCordButton(exitMenu, getmaxx()/2-50, getmaxy()/2+50, getmaxx()/2+50,  getmaxy()/2+100);
+    drawButton(exitMenu);
+    outtextxy(exitMenu.stSus.x+35, exitMenu.stSus.y+20, "Exit");
+
+    initCordButton(playerVsPcButton, getmaxx()/2-100, getmaxy()/2-50, getmaxx()/2+100,  getmaxy()/2);
+    drawButton(playerVsPcButton);
+    outtextxy(playerVsPcButton.stSus.x+35, playerVsPcButton.stSus.y+20, "Player vs PC");
 }
 
 //acest update va fi constant. gandeste ca va rula la infinit
@@ -403,6 +408,12 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                 }
         }
 
+        if(isButonClicked(mouse, exitPlayerVsPc)){
+            gataPlayerVsPC=1;
+// TODO (andre#1#): ERASE ALL.
+            initDesenMenu();
+        }
+
         //daca utilizatorul apasa pe unul dintre acele butoane.
         if(isButonClicked(mouse, zero)){
             //daca e pe prima pozitie, arata eroare
@@ -536,6 +547,14 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
 
 void initDesenPlayerVsPc(){
 
+    //init variabile pt PlayerVsPc
+    latime=300;
+    latura=300/7;
+    desenCord.x=(getmaxx()-latime)/2;
+    desenCord.y=100;
+    linie=0;
+    scroll=100;
+
     //desenare linie 0
     for(int linieTemp=0; linieTemp<2; ++linieTemp)
         rectangle(desenCord.x+linieTemp*latura, desenCord.y,
@@ -551,16 +570,6 @@ void initDesenPlayerVsPc(){
                    desenCord.x+latura*(j+1), desenCord.y+latura*(linie+1));
     }
 
-}
-
-void initDesenMenu(){
-    initCordButton(exitt, getmaxx()/2-50, getmaxy()/2+50, getmaxx()/2+50,  getmaxy()/2+100);
-    drawButton(exitt);
-    outtextxy(exitt.stSus.x+35, exitt.stSus.y+20, "Exit");
-
-    initCordButton(playerVsPcButton, getmaxx()/2-100, getmaxy()/2-50, getmaxx()/2+100,  getmaxy()/2);
-    drawButton(playerVsPcButton);
-    outtextxy(playerVsPcButton.stSus.x+35, playerVsPcButton.stSus.y+20, "Player vs PC");
 }
 
 
@@ -603,11 +612,12 @@ void updateGame(){
         mouse.x=mousex();
         mouse.y=mousey();
 
-        if(isButonClicked(mouse, exitt)){
+        if(isButonClicked(mouse, exitMenu)){
             gataGame=1;
         }
 
         if(isButonClicked(mouse, playerVsPcButton)){
+            gataPlayerVsPC=0;
             setcolor(BLACK);
             initDesenMenu();
             setcolor(WHITE);
@@ -621,6 +631,7 @@ void updateGame(){
 int main() {
 
     initwindow(1500,1270);
+
 
     initDesenMenu();
 
