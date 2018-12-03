@@ -599,6 +599,7 @@ void playerVsPC(){
         updatePlayerVsPC(cifru, pozCifra, matCifru);
     }while (!gataPlayerVsPC && !suntEgale(cifru, (matCifru[linie]+2)));
 
+    cleardevice();
     initDesenMenu();
 
 }
