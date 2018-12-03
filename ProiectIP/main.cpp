@@ -240,7 +240,7 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
         matCifru[linie][0]=nrElemCentrate;
         matCifru[linie][1]=nrElemMutate;
 
-        //le fac sir
+        //le fac sir si le afisez
         char* nrElemCentrateChar, *nrElemMutateChar;
         nrElemCentrateChar=new char[5];
         nrElemMutateChar=new char[5];
@@ -410,7 +410,6 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
 
         if(isButonClicked(mouse, exitPlayerVsPc)){
             gataPlayerVsPC=1;
-// TODO (andre#1#): ERASE ALL.
             initDesenMenu();
         }
 
@@ -589,7 +588,7 @@ void playerVsPC(){
     cifru=creareCifru();
     cifruMeu=new unsigned[5];
 
-    //pun pe linia 0 din matrice cifrul.
+    //pun pe linia 0 din matrice cifrul secret.
     for(int i=2; i<7; ++i)
         matCifru[0][i]=cifru[i-2];
 
@@ -618,9 +617,12 @@ void updateGame(){
         }
 
         if(isButonClicked(mouse, playerVsPcButton)){
+
             gataPlayerVsPC=0;
+            //sterg main menu
             setcolor(BLACK);
             initDesenMenu();
+
             setcolor(WHITE);
             playerVsPC();
         }
@@ -640,14 +642,6 @@ int main() {
         updateGame();
     }while(!gataGame);
 
-/*
-    //desenam inceputul si toate cele
-    initDesen();
-
-    //versiunea player VS PC
-    playerVsPC();
-*/
-    getch();
     closegraph();
 
     return 0;
