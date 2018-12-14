@@ -639,6 +639,7 @@ void updateGame(){
             setcolor(WHITE);
             playerVsPlayer();
         }
+
     }
 }
 
