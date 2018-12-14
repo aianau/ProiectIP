@@ -18,7 +18,7 @@ struct BUTON{
 };
 BUTON upArrow, downArrow;
 BUTON zero, unu, doi, trei, patru, cinci, sase, sapte, opt, noua;
-BUTON exitMenuButon, playerVsPcButon, playerVsPlayerButon, exitPlayerVsPcButon, exitPlayervsPlayerButon;
+BUTON exitMenuButon, playerVsPcButon, playerVsPlayerButon, exitPlayerVsPcButon, exitPlayervsPlayerButon, DeleteNumber;
 
 unsigned latura,  latime, linie;
 unsigned gataPlayerVsPC, gataPlayerVsPlayer, gataGame;
@@ -97,6 +97,9 @@ void drawGUIInputNumber(){
 void initDesenAuxiliaryButons(){
 
     drawScrollArrows();
+    initCordButon(DeleteNumber ,60, getmaxy()/2-150, 250, getmaxy()/2-115);
+    drawButon(DeleteNumber);
+    outtextxy(DeleteNumber.stSus.x+17, DeleteNumber.stSus.y+10, "Sterge Numarul Inserat");
 
     //coordonate butoane cu numere si desenarea lor.
     drawGUIInputNumber();
@@ -228,8 +231,8 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
 
         //le fac sir si le afisez
         char* nrElemCentrateChar, *nrElemMutateChar;
-        nrElemCentrateChar=new char[5];
-        nrElemMutateChar=new char[5];
+        nrElemCentrateChar=new char[2];
+        nrElemMutateChar=new char[2];
 
         itoa(nrElemCentrate, nrElemCentrateChar, 10);
         itoa(nrElemMutate, nrElemMutateChar, 10);
@@ -241,7 +244,7 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
         //daca s-a terminat jocul, stop.
         if(suntEgale(cifru, (matCifru[linie]+2))){
             outtextxy(getmaxx()-100, 100, "FELICITARI");
-            Sleep(5);
+            Sleep(500);
             gataPlayerVsPC=1;
             ///TODO: Enter Main Menu.
         }
@@ -399,6 +402,8 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
             initDesenMenu();
         }
 
+
+
         //daca utilizatorul apasa pe unul dintre acele butoane.
         if(isButonClicked(mouse, zero)){
             //daca e pe prima pozitie, arata eroare
@@ -406,9 +411,12 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                 blinkMessage(getmaxx()-300, 200, "APASATI ALTA CIFRA");
             }else{
                 //daca cifra a mai fost pusa
-                if(checkPunere(0, matCifru[linie], pozCifra-1)){
+                if(checkPunere(0, matCifru[linie], pozCifra-1))
+                {
                     blinkMessage(getmaxx()-300, 200, "CIFRA A MAI FOST PUSA");
-                }else {
+                }
+                else
+                {
                     //bag in matrice
                     matCifru[linie][pozCifra]=0;
                     //desenez
@@ -527,6 +535,7 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                 }
         }
 
+
     }
 }
 
@@ -636,7 +645,7 @@ void updateGame(){
 
 int main() {
 
-    initwindow(1500,1270, "Cinci Cifre", 0, 0, 0);
+    initwindow(1280,1024, "Cinci Cifre", 0, 0, 0);
 
 
     initDesenMenu();
