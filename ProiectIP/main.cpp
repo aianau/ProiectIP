@@ -18,7 +18,7 @@ struct BUTON{
 };
 BUTON upArrow, downArrow;
 BUTON zero, unu, doi, trei, patru, cinci, sase, sapte, opt, noua;
-BUTON exitMenuButon, playerVsPcButon, playerVsPlayerButon, exitPlayerVsPcButon, exitPlayervsPlayerButon, DeleteNumber, Instructiuni, exitinstructiuni;
+BUTON exitMenuButon, playerVsPcButon, playerVsPlayerButon, exitPlayerVsPcButon, exitPlayervsPlayerButon, deleteNumber, instructiuniMeniu, exitinstructiuni;
 
 unsigned latura,  latime, linie;
 unsigned gataPlayerVsPC, gataPlayerVsPlayer, gataGame, gatainstructiuni;
@@ -55,7 +55,7 @@ void drawScrollArrows(){
 void drawGUIInputNumber(){
     initCordButon(zero, 100, 100, 142, 142);
     drawButon(zero);
-     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
     outtextxy(107,101, "0");
 
     initCordButon(unu, 142, 100, 184, 142);
@@ -68,11 +68,11 @@ void drawGUIInputNumber(){
 
     initCordButon(trei, 100, 142, 142, 184);
     drawButon(trei);
-   outtextxy(108,143, "3");
+    outtextxy(108,143, "3");
 
     initCordButon(patru, 142, 142, 184, 184);
     drawButon(patru);
-   outtextxy(150,143, "4");
+    outtextxy(150,143, "4");
 
     initCordButon(cinci, 184, 142, 226, 184);
     drawButon(cinci);
@@ -88,7 +88,7 @@ void drawGUIInputNumber(){
 
     initCordButon(opt, 184, 184, 226, 226);
     drawButon(opt);
-   outtextxy(193,185, "8");
+    outtextxy(193,185, "8");
 
     initCordButon(noua, 142, 226, 184, 268);
     drawButon(noua);
@@ -98,10 +98,10 @@ void drawGUIInputNumber(){
 void initDesenAuxiliaryButons(){
 
     drawScrollArrows();
-    initCordButon(DeleteNumber ,30, getmaxy()/2-50, 340, getmaxy()/2+5);
-    drawButon(DeleteNumber);
+    initCordButon(deleteNumber ,30, getmaxy()/2-50, 340, getmaxy()/2+5);
+    drawButon(deleteNumber);
     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
-    outtextxy(DeleteNumber.stSus.x+13, DeleteNumber.stSus.y+10, "Sterge Cifra");
+    outtextxy(deleteNumber.stSus.x+13, deleteNumber.stSus.y+10, "Sterge Cifra");
 
     //coordonate butoane cu numere si desenarea lor.
     drawGUIInputNumber();
@@ -109,7 +109,7 @@ void initDesenAuxiliaryButons(){
     //coordonata btn exitPlayerVsPcButon
     initCordButon(exitPlayerVsPcButon, 30, getmaxy()/2+100, 350, getmaxy()/2+160);
     drawButon(exitPlayerVsPcButon);
-     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
     outtextxy(exitPlayerVsPcButon.stSus.x+10, exitPlayerVsPcButon.stSus.y+10, "To Main Menu");
 }
 
@@ -212,10 +212,10 @@ void initDesenMenu(){
     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
     outtextxy(playerVsPlayerButon.stSus.x+20, playerVsPlayerButon.stSus.y+7,"Player vs Player");
 
-    initCordButon(Instructiuni, getmaxx()/2-160, getmaxy()/2-30, getmaxx()/2+118, getmaxy()/2+30);
-    drawButon(Instructiuni);
+    initCordButon(instructiuniMeniu, getmaxx()/2-160, getmaxy()/2-30, getmaxx()/2+118, getmaxy()/2+30);
+    drawButon(instructiuniMeniu);
     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
-    outtextxy(Instructiuni.stSus.x+13,Instructiuni.stSus.y+5, "Instructiuni");
+    outtextxy(instructiuniMeniu.stSus.x+13,instructiuniMeniu.stSus.y+5, "Instructiuni");
 }
 
 //acest update va fi constant. gandeste ca va rula la infinit
@@ -253,8 +253,8 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
         itoa(nrElemMutate, nrElemMutateChar, 10);
 
         //le desenez
-        outtextxy(desenCord.x+latura/2-13, desenCord.y+latura*linie+latura/2-18, nrElemCentrateChar);
-        outtextxy(desenCord.x+latura+latura/2-13, desenCord.y+latura*linie+latura/2-18, nrElemMutateChar);
+        outtextxy(desenCord.x+latura/2-16, desenCord.y+latura*linie+latura/2-18, nrElemCentrateChar);
+        outtextxy(desenCord.x+latura+latura/2-16, desenCord.y+latura*linie+latura/2-18, nrElemMutateChar);
 
         //daca s-a terminat jocul, stop.
         if(suntEgale(cifru, (matCifru[linie]+2))){
@@ -297,8 +297,8 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
             setcolor(BLACK);
 
             //linia 0
-            outtextxy(desenCord.x+latura/2-13, desenCord.y+latura/2-18, "C");
-            outtextxy(desenCord.x+latura+latura/2-13, desenCord.y+latura/2-18, "M");
+            outtextxy(desenCord.x+latura/2-16, desenCord.y+latura/2-18, "C");
+            outtextxy(desenCord.x+latura+latura/2-16, desenCord.y+latura/2-18, "M");
 
             for(int linieTemp=-80; linieTemp<=5; ++linieTemp){
                 rectangle(desenCord.x, desenCord.y+linieTemp*latura,
@@ -315,7 +315,7 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                     char *cifra;
                     cifra=new char[5];
                     itoa(matCifru[i][j], cifra, 10);
-                    outtextxy(desenCord.x+latura*j+latura/2-13, desenCord.y+latura*i+latura/2-18, cifra);
+                    outtextxy(desenCord.x+latura*j+latura/2-16, desenCord.y+latura*i+latura/2-18, cifra);
                 }
 
             //update la coordonata desenului pe y.
@@ -325,8 +325,8 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
             setcolor(WHITE);
 
             //linia 0
-            outtextxy(desenCord.x+latura/2-13, desenCord.y+latura/2-18, "C");
-            outtextxy(desenCord.x+latura+latura/2-13, desenCord.y+latura/2-18, "M");
+            outtextxy(desenCord.x+latura/2-16, desenCord.y+latura/2-18, "C");
+            outtextxy(desenCord.x+latura+latura/2-16, desenCord.y+latura/2-18, "M");
 
             rectangle(desenCord.x, desenCord.y,
                       desenCord.x+latura, desenCord.y+latura);
@@ -346,7 +346,7 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                         char *cifra;
                         cifra=new char[5];
                         itoa(matCifru[i][j], cifra, 10);
-                        outtextxy(desenCord.x+latura*j+latura/2-13, desenCord.y+latura*i+latura/2-18, cifra);
+                        outtextxy(desenCord.x+latura*j+latura/2-16, desenCord.y+latura*i+latura/2-18, cifra);
                     }
                 }
         }
@@ -358,8 +358,8 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
             setcolor(BLACK);
 
             //linia 0
-            outtextxy(desenCord.x+latura/2-15, desenCord.y+latura/2-18, "C");
-            outtextxy(desenCord.x+latura+latura/2-15, desenCord.y+latura/2-18, "M");
+            outtextxy(desenCord.x+latura/2-16, desenCord.y+latura/2-18, "C");
+            outtextxy(desenCord.x+latura+latura/2-16, desenCord.y+latura/2-18, "M");
 
             for(int linieTemp=-80; linieTemp<=10; ++linieTemp){
                 rectangle(desenCord.x, desenCord.y+linieTemp*latura,
@@ -376,7 +376,7 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                     char *cifra;
                     cifra=new char[5];
                     itoa(matCifru[i][j], cifra, 10);
-                    outtextxy(desenCord.x+latura*j+latura/2-13, desenCord.y+latura*i+latura/2-18, cifra);
+                    outtextxy(desenCord.x+latura*j+latura/2-16, desenCord.y+latura*i+latura/2-18, cifra);
                 }
 
             //update la coordonata desenului pe y.
@@ -438,7 +438,7 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                     matCifru[linie][pozCifra]=0;
                     //desenez
                     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
-                    outtextxy(desenCord.x+pozCifra*latura+latura/2-13, desenCord.y+linie*latura+latura/2-18, "0");
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "0");
                     //increment pozitie cifra
                     pozCifra++;
                 }
@@ -453,7 +453,7 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                     matCifru[linie][pozCifra]=1;
                     //desenez
                     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
-                    outtextxy(desenCord.x+pozCifra*latura+latura/2-13, desenCord.y+linie*latura+latura/2-18, "1");
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "1");
                     //increment pozitie cifra
                     pozCifra++;
                 }
@@ -467,7 +467,7 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                     matCifru[linie][pozCifra]=2;
                     //desenez
                      settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
-                    outtextxy(desenCord.x+pozCifra*latura+latura/2-13, desenCord.y+linie*latura+latura/2-18, "2");
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "2");
                     //increment pozitie cifra
                     pozCifra++;
                 }
@@ -481,7 +481,7 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                     matCifru[linie][pozCifra]=3;
                     //desenez
                      settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
-                    outtextxy(desenCord.x+pozCifra*latura+latura/2-13, desenCord.y+linie*latura+latura/2-18, "3");
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "3");
                     //increment pozitie cifra
                     pozCifra++;
                 }
@@ -495,7 +495,7 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                     matCifru[linie][pozCifra]=4;
                     //desenez
                      settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
-                    outtextxy(desenCord.x+pozCifra*latura+latura/2-13, desenCord.y+linie*latura+latura/2-18, "4");
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "4");
                     //increment pozitie cifra
                     pozCifra++;
                 }
@@ -509,7 +509,7 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                     matCifru[linie][pozCifra]=5;
                     //desenez
                      settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
-                    outtextxy(desenCord.x+pozCifra*latura+latura/2-13, desenCord.y+linie*latura+latura/2-18, "5");
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "5");
                     //increment pozitie cifra
                     pozCifra++;
                 }
@@ -523,7 +523,7 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                     matCifru[linie][pozCifra]=6;
                     //desenez
                      settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
-                    outtextxy(desenCord.x+pozCifra*latura+latura/2-13, desenCord.y+linie*latura+latura/2-18, "6");
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "6");
                     //increment pozitie cifra
                     pozCifra++;
                 }
@@ -538,7 +538,7 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                     matCifru[linie][pozCifra]=7;
                     //desenez
                      settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
-                    outtextxy(desenCord.x+pozCifra*latura+latura/2-13, desenCord.y+linie*latura+latura/2-18, "7");
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "7");
                     //increment pozitie cifra
                     pozCifra++;
                 }
@@ -552,7 +552,7 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                     matCifru[linie][pozCifra]=8;
                     //desenez
                      settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
-                    outtextxy(desenCord.x+pozCifra*latura+latura/2-13, desenCord.y+linie*latura+latura/2-18, "8");
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "8");
                     //increment pozitie cifra
                     pozCifra++;
                 }
@@ -566,15 +566,13 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                     matCifru[linie][pozCifra]=9;
                     //desenez
                      settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
-                    outtextxy(desenCord.x+pozCifra*latura+latura/2-13, desenCord.y+linie*latura+latura/2-18, "9");
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "9");
                     //increment pozitie cifra
                     pozCifra++;
                 }
+            }
         }
-
-
-    }
-}
+  }
 
 void drawLineZeroAndPrepareTable(){
     //desenare linie 0
@@ -602,7 +600,7 @@ void initDesenPlayerVsPc(){
     desenCord.x=(getmaxx()-latime)/2+130;
     desenCord.y=100;
     linie=0;
-    scroll=100;
+    scroll=90;
 
     drawLineZeroAndPrepareTable();
 }
@@ -645,23 +643,44 @@ void playerVsPlayer(){
     initDesenAuxiliaryButons();
 }
 
+ void updateInstructiuni(){
+      if(ismouseclick(WM_LBUTTONDOWN)){
+            clearmouseclick(WM_LBUTTONDOWN);
 
-void DesenInstructiuni(){
+            CORD mouse;
+            mouse.x=mousex();
+            mouse.y=mousey();
+
+       if(isButonClicked(mouse, exitinstructiuni)){
+            gatainstructiuni=1;
+            initDesenMenu();
+        }
+    }
+ }
+
+void desenInstructiuni(){
    // initwindow(1280, 1024, "Instuctiuni");
-   setcolor(WHITE);
-    initCordButon(exitinstructiuni,870, 600, 1160,650);
-   drawButon(exitinstructiuni);
-    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
-    outtextxy(887 ,610, "To main meniu");
+       setcolor(WHITE);
+       initCordButon(exitinstructiuni,870, 600, 1160,650);
+       drawButon(exitinstructiuni);
+       settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
+       outtextxy(887 ,610, "To main meniu");
 
-   readimagefile("CifruG.jpg",50,20,350,150);
-   readimagefile("DubluraCif.jpg",500,20,800,150);
-   readimagefile("IntrebareG.jpg",900,20,1200,150);
-   readimagefile("Dublura.jpg",50,250,350,400);
-   readimagefile("0M0C.jpg",500,250,800,400);
-   readimagefile("3M0C.jpg",900,250,1200,400);
-   readimagefile("2M3C.jpg",50,480,350,630);
-   readimagefile("0M5C.jpg",500,480,800,630);
+       readimagefile("CifruG.jpg",50,20,350,150);
+       readimagefile("DubluraCif.jpg",500,20,800,150);
+       readimagefile("IntrebareG.jpg",900,20,1200,150);
+       readimagefile("Dublura.jpg",50,250,350,400);
+       readimagefile("0M0C.jpg",500,250,800,400);
+       readimagefile("3M0C.jpg",900,250,1200,400);
+       readimagefile("2M3C.jpg",50,480,350,630);
+       readimagefile("0M5C.jpg",500,480,800,630);
+
+    do{
+        updateInstructiuni();
+    }while (!gatainstructiuni);
+
+     cleardevice();
+     initDesenMenu();
 
 
 
@@ -702,23 +721,15 @@ void updateGame(){
             playerVsPlayer();
         }
 
-         if(ismouseclick(WM_LBUTTONDOWN)){
-        clearmouseclick(WM_LBUTTONDOWN);
-
-        CORD mouse;
-        mouse.x=mousex();
-        mouse.y=mousey();
-         if(isButonClicked(mouse, Instructiuni))
-        {
+         if(isButonClicked(mouse, instructiuniMeniu)){
+            gatainstructiuni=0;
             setcolor(BLACK);
             initDesenMenu();
-            DesenInstructiuni();
+            desenInstructiuni();
 
+        }
     }
-       }
-
-     }
-   }
+}
 
 
 
