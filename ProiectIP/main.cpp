@@ -427,6 +427,21 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
             initDesenMenu();
         }
 
+        if(isButonClicked(mouse, deleteNumber)){
+            if(pozCifra>2){
+                pozCifra--;
+
+                setcolor(BLACK);
+                for(int i=0; i<9; ++i){
+                    char *cifra;
+                    cifra = new char[5];
+
+                    itoa(i, cifra, 10);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, cifra);
+                }
+                setcolor(WHITE);
+            }
+        }
 
 
         //daca utilizatorul apasa pe unul dintre acele butoane.
@@ -875,6 +890,7 @@ void updatePlayerVsPlayer(SOCKET &client, unsigned *cifru, unsigned &pozCifra, u
 
     mesajDeTrimis[511] = '\0';
     strcpy(mesajDeTrimis, "0");
+    mesajDeTrimis[1]='\0';
     mesajPrimit[511] = '\0';
 
     int result_send,  result_recv;
@@ -888,6 +904,7 @@ void updatePlayerVsPlayer(SOCKET &client, unsigned *cifru, unsigned &pozCifra, u
 
     //daca oponentul a terminat.
     if(strcmp(mesajPrimit, "1") == 0){
+        cleardevice();
         outtextxy(getmaxx()/2, getmaxy()/2, "Oponentul a castigat!");
         Sleep(2000);
         cleardevice();
@@ -938,8 +955,9 @@ void updatePlayerVsPlayer(SOCKET &client, unsigned *cifru, unsigned &pozCifra, u
         //daca s-a terminat jocul, stop.
         if(suntEgale(cifru, (matCifru[linie]+2))){
 
+            Sleep(500);
             cleardevice();
-            outtextxy(getmaxx()/2-100, 200, "FELICITARI");
+            outtextxy(getmaxx()/2, 10, "FELICITARI");
             Sleep(3000);
             gataPlayerVsPlayer=1;
 
@@ -951,9 +969,12 @@ void updatePlayerVsPlayer(SOCKET &client, unsigned *cifru, unsigned &pozCifra, u
             cleardevice();
             initDesenMenu();
 
-            ///compara scorurile sa vezi cine a castigat.
+            //compara scorurile sa vezi cine a castigat.
             ///ASTA E VARIANTA CARE CASTIGA
             ///MAI REPEDE, NU CEL CARE CASTIGA DIN CELE MAI PUTINE MISCARI.
+
+            ///prbl: la sfarsitul jocului cel care pierde ia freeze si la fel
+            ///jucatorul al carui oponent da exit ia freeze.
         }
         else{
 
@@ -1111,6 +1132,21 @@ void updatePlayerVsPlayer(SOCKET &client, unsigned *cifru, unsigned &pozCifra, u
             initDesenMenu();
         }
 
+        if(isButonClicked(mouse, deleteNumber)){
+            if(pozCifra>2){
+                pozCifra--;
+
+                setcolor(BLACK);
+                for(int i=0; i<9; ++i){
+                    char *cifra;
+                    cifra = new char[5];
+
+                    itoa(i, cifra, 10);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, cifra);
+                }
+                setcolor(WHITE);
+            }
+        }
 
 
         //daca utilizatorul apasa pe unul dintre acele butoane.
@@ -1282,7 +1318,7 @@ void playerVsPlayer(){
 	clientSocketConnect(client, HOST, PORT);
 
 	//isi dau cifrul unul altuia
-	outtextxy(120, 10, "Introduceti cifrul pentru oponent!");
+	outtextxy(120, 5, "Introduceti cifrul pentru oponent!");
 
 	//desenare linie pentru cifru.
 	for(int j=0; j<5; ++j){
@@ -1312,7 +1348,6 @@ void playerVsPlayer(){
         initDesenAuxiliaryButons();
 
         //transmitere cifru.
-
         int result_send, result_recv;
 
         result_send = send(client, cifruAles, 5, 0);
@@ -1342,11 +1377,14 @@ void playerVsPlayer(){
         //do pana cand nu e gata jocul.
         do{
             updatePlayerVsPlayer(client, cifru, pozCifra, matCifru);
-        }while (!gataPlayerVsPlayer && !suntEgale(cifru, (matCifru[linie]+2)));
+        }while (!gataPlayerVsPlayer);
+                // && !suntEgale(cifru, (matCifru[linie]+2)));
     }
-
-    Sleep(2000);
+    ///aci e prbl ca nu imi ruleaza liniile astea de cod pentru cel pierzator.
+    ///pt castigator imi ruleaza astea da' nu imi ruleaza mesajul de win
+    Sleep(1000);
     cleardevice();
+    Sleep(1000);
     initDesenMenu();
 }
 

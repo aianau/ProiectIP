@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1545493197 source:c:\users\andre\desktop\proiectip\proiectip\main.cpp
+1545508801 source:c:\users\andre\desktop\proiectip\proiectip\main.cpp
 	"functii_socket.cpp"
 	<iostream>
 	<stdlib.h>
