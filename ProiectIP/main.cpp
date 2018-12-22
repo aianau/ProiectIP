@@ -1,3 +1,8 @@
+#define _WIN32_WINNT 0x501
+#define PORT "1338"
+#define HOST "192.168.0.1"
+
+#include "functii_socket.cpp"
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
@@ -18,10 +23,11 @@ struct BUTON{
 };
 BUTON upArrow, downArrow;
 BUTON zero, unu, doi, trei, patru, cinci, sase, sapte, opt, noua;
-BUTON exitMenuButon, playerVsPcButon, playerVsPlayerButon, exitPlayerVsPcButon, exitPlayervsPlayerButon, deleteNumber, instructiuniMeniu, exitinstructiuni;
+BUTON exitMenuButon, singlePlayerButon, playerVsPlayerButon, exitSinglePlayerButon, exitPlayervsPlayerButon, deleteNumber, instructiuniMeniu, exitinstructiuni;
 
 unsigned latura,  latime, linie;
 unsigned gataPlayerVsPC, gataPlayerVsPlayer, gataGame, gatainstructiuni;
+unsigned scor;
 
 int scroll;
 
@@ -98,6 +104,7 @@ void drawGUIInputNumber(){
 void initDesenAuxiliaryButons(){
 
     drawScrollArrows();
+
     initCordButon(deleteNumber ,30, getmaxy()/2-50, 340, getmaxy()/2+5);
     drawButon(deleteNumber);
     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
@@ -106,11 +113,12 @@ void initDesenAuxiliaryButons(){
     //coordonate butoane cu numere si desenarea lor.
     drawGUIInputNumber();
 
-    //coordonata btn exitPlayerVsPcButon
-    initCordButon(exitPlayerVsPcButon, 30, getmaxy()/2+100, 350, getmaxy()/2+160);
-    drawButon(exitPlayerVsPcButon);
+    //coordonata btn exitSinglePlayerButon
+    initCordButon(exitSinglePlayerButon, 30, getmaxy()/2+100, 350, getmaxy()/2+160);
+    initCordButon(exitPlayervsPlayerButon, 30, getmaxy()/2+100, 350, getmaxy()/2+160);
+    drawButon(exitSinglePlayerButon);
     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
-    outtextxy(exitPlayerVsPcButon.stSus.x+10, exitPlayerVsPcButon.stSus.y+10, "To Main Menu");
+    outtextxy(exitSinglePlayerButon.stSus.x+10, exitSinglePlayerButon.stSus.y+10, "To Main Menu");
 }
 
 bool suntEgale(unsigned *cifru, unsigned *cifru1){
@@ -197,15 +205,17 @@ bool checkPunere(unsigned cifra, unsigned linieMat[], unsigned nrElem){
 }
 
 void initDesenMenu(){
+    cleardevice();
+
     initCordButon(exitMenuButon, getmaxx()/2-95, getmaxy()/2+70, getmaxx()/2+30,  getmaxy()/2+138);
     drawButon(exitMenuButon);
     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
     outtextxy(exitMenuButon.stSus.x+20, exitMenuButon.stSus.y+10, "Exit");
 
-    initCordButon(playerVsPcButon, getmaxx()/2-190, getmaxy()/2-140, getmaxx()/2+140,  getmaxy()/2-70);
-    drawButon(playerVsPcButon);
+    initCordButon(singlePlayerButon, getmaxx()/2-190, getmaxy()/2-140, getmaxx()/2+140,  getmaxy()/2-70);
+    drawButon(singlePlayerButon);
     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
-    outtextxy(playerVsPcButon.stSus.x+15, playerVsPcButon.stSus.y+10, "Player vs PC");
+    outtextxy(singlePlayerButon.stSus.x+15, singlePlayerButon.stSus.y+10, "Player vs PC");
 
     initCordButon(playerVsPlayerButon, getmaxx()/2-230, getmaxy()/2-250, getmaxx()/2+185,  getmaxy()/2-185);
     drawButon(playerVsPlayerButon);
@@ -412,7 +422,7 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                 }
         }
 
-        if(isButonClicked(mouse, exitPlayerVsPcButon)){
+        if(isButonClicked(mouse, exitSinglePlayerButon)){
             gataPlayerVsPC=1;
             initDesenMenu();
         }
@@ -572,7 +582,7 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                 }
             }
         }
-  }
+}
 
 void drawLineZeroAndPrepareTable(){
     //desenare linie 0
@@ -605,7 +615,6 @@ void initDesenPlayerVsPc(){
     drawLineZeroAndPrepareTable();
 }
 
-
 void playerVsPC(){
 
     //desenare auxiliary butons
@@ -637,10 +646,708 @@ void playerVsPC(){
 
 }
 
+void initVarPlayerVsPlayer(){
+    latime=320;
+    latura=320/7;
+    desenCord.x=(getmaxx()-latime)/2+130;
+    desenCord.y=100;
+    linie=0;
+    scroll=90;
+}
+
+//verific daca cifra a mai fost pusa in cifruAles pana la pozitia pozCifra
+bool checkPunerePlayerVsPlayer(int cifra, char *cifruAles, unsigned pozCifra){
+    for(int i=0; i<pozCifra; ++i)
+        if((unsigned) (cifruAles[i]-'0') == cifra)
+            return true;
+    return false;
+}
+
+void updateCerereCifru(char *cifruAles, unsigned &pozCifra){
+    //daca butonul este apasat
+    if(ismouseclick(WM_LBUTTONDOWN)){
+        //eliberam "mouse"-ul. asa facea proful, am vazut si am scris la fel si a mers.
+        clearmouseclick(WM_LBUTTONDOWN);
+
+        //retinem coordonatele mouse-ului unde a dat click.
+        CORD mouse;
+        mouse.x=mousex();
+        mouse.y=mousey();
+
+        if(isButonClicked(mouse, exitPlayervsPlayerButon)){
+            cleardevice();
+            initDesenMenu();
+            gataPlayerVsPlayer=1;
+        }
+
+        if(isButonClicked(mouse, deleteNumber)){
+            if(pozCifra>0){
+                pozCifra--;
+
+                setcolor(BLACK);
+                for(int i=0; i<9; ++i){
+                    char *cifra;
+                    cifra = new char[5];
+
+                    itoa(i, cifra, 10);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, cifra);
+                }
+                setcolor(WHITE);
+            }
+        }
+
+        //daca utilizatorul apasa pe unul dintre acele butoane.
+        if(isButonClicked(mouse, zero)){
+            //daca e pe prima pozitie, arata eroare
+            if(pozCifra==0){
+                blinkMessage(getmaxx()-920, 50, "APASATI ALTA CIFRA");
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+            }else{
+                //daca cifra a mai fost pusa
+                if(checkPunerePlayerVsPlayer(0, cifruAles, pozCifra))
+                {
+                    blinkMessage(getmaxx()-920, 50, "CIFRA A MAI FOST PUSA");
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                }
+                else
+                {
+                    cifruAles[pozCifra]='0';
+                    //desenez
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "0");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
+            }
+        }
+        if(isButonClicked(mouse, unu)){
+            if(checkPunerePlayerVsPlayer(1, cifruAles, pozCifra))
+                {
+                    blinkMessage(getmaxx()-920, 50, "CIFRA A MAI FOST PUSA");
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                }
+                else
+                {
+                    cifruAles[pozCifra]='1';
+                    //desenez
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "1");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
+        }
+        if(isButonClicked(mouse, doi)){
+            if(checkPunerePlayerVsPlayer(2, cifruAles, pozCifra))
+                {
+                    blinkMessage(getmaxx()-920, 50, "CIFRA A MAI FOST PUSA");
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                }
+                else
+                {
+                    cifruAles[pozCifra]='2';
+                    //desenez
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "2");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
+        }
+        if(isButonClicked(mouse, trei)){
+            if(checkPunerePlayerVsPlayer(3, cifruAles, pozCifra))
+                {
+                    blinkMessage(getmaxx()-920, 50, "CIFRA A MAI FOST PUSA");
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                }
+                else
+                {
+                    cifruAles[pozCifra]='3';
+                    //desenez
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "3");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
+        }
+        if(isButonClicked(mouse, patru)){
+            if(checkPunerePlayerVsPlayer(4, cifruAles, pozCifra))
+                {
+                    blinkMessage(getmaxx()-920, 50, "CIFRA A MAI FOST PUSA");
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                }
+                else
+                {
+                    cifruAles[pozCifra]='4';
+                    //desenez
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "4");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
+        }
+        if(isButonClicked(mouse, cinci)){
+            if(checkPunerePlayerVsPlayer(5, cifruAles, pozCifra))
+                {
+                    blinkMessage(getmaxx()-920, 50, "CIFRA A MAI FOST PUSA");
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                }
+                else
+                {
+                    cifruAles[pozCifra]='5';
+                    //desenez
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "5");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
+        }
+        if(isButonClicked(mouse, sase)){
+           if(checkPunerePlayerVsPlayer(6, cifruAles, pozCifra))
+                {
+                    blinkMessage(getmaxx()-920, 50, "CIFRA A MAI FOST PUSA");
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                }
+                else
+                {
+                    cifruAles[pozCifra]='6';
+                    //desenez
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "6");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
+        }
+        if(isButonClicked(mouse, sapte)){
+            if(checkPunerePlayerVsPlayer(7, cifruAles, pozCifra))
+                {
+                    blinkMessage(getmaxx()-920, 50, "CIFRA A MAI FOST PUSA");
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                }
+                else
+                {
+                    cifruAles[pozCifra]='7';
+                    //desenez
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "7");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
+        }
+        if(isButonClicked(mouse, opt)){
+            if(checkPunerePlayerVsPlayer(8, cifruAles, pozCifra))
+                {
+                    blinkMessage(getmaxx()-920, 50, "CIFRA A MAI FOST PUSA");
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                }
+                else
+                {
+                    cifruAles[pozCifra]='8';
+                    //desenez
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "8");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
+        }
+        if(isButonClicked(mouse, noua)){
+            if(checkPunerePlayerVsPlayer(9, cifruAles, pozCifra))
+                {
+                    blinkMessage(getmaxx()-920, 50, "CIFRA A MAI FOST PUSA");
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                }
+                else
+                {
+                    cifruAles[pozCifra]='9';
+                    //desenez
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "9");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
+        }
+    }
+}
+
+void updatePlayerVsPlayer(SOCKET &client, unsigned *cifru, unsigned &pozCifra, unsigned matCifru[1000][7]){
+
+    //var pt transmitere
+    char mesajDeTrimis[512];
+    char mesajPrimit[512];
+
+    mesajDeTrimis[511] = '\0';
+    strcpy(mesajDeTrimis, "0");
+    mesajPrimit[511] = '\0';
+
+    int result_send,  result_recv;
+
+    //trimite semnal ca nu ai castigat.
+    result_send = send(client, mesajDeTrimis, (int)strlen(mesajDeTrimis), 0);
+
+    //primeste semnal de la celalalt client daca jocu e gata.
+    result_recv = recv(client, mesajPrimit, 512, 0);
+    mesajPrimit[result_recv] = '\0';
+
+    //daca oponentul a terminat.
+    if(strcmp(mesajPrimit, "1") == 0){
+        outtextxy(getmaxx()/2, getmaxy()/2, "Oponentul a castigat!");
+        Sleep(2000);
+        cleardevice();
+        initDesenMenu();
+        gataPlayerVsPlayer=1;
+    }
+
+    //reinit mesaje
+    mesajDeTrimis[511] = '\0';
+    mesajPrimit[511] = '\0';
+
+
+    //daca utilizatorul a ales 5 cifre, i se va updata C si M in tabel.
+    if(pozCifra==7){
+        //creste scorul
+        scor++;
+
+        //le calculez
+        unsigned nrElemCentrate=0, nrElemMutate=0;
+
+        for(int j=0; j<5; ++j){
+            //numar elementele centrate
+            if (cifru[j]==matCifru[linie][j+2])
+                nrElemCentrate++;
+            //numar elementele mutate.
+            for(int jtemp=0; jtemp<5; ++jtemp)
+                if(j!=jtemp && cifru[j]==matCifru[linie][jtemp+2])
+                    nrElemMutate++;
+        }
+
+        //le pun in matrice
+        matCifru[linie][0]=nrElemCentrate;
+        matCifru[linie][1]=nrElemMutate;
+
+        //le fac sir si le afisez
+        char* nrElemCentrateChar, *nrElemMutateChar;
+        nrElemCentrateChar=new char[2];
+        nrElemMutateChar=new char[2];
+
+        itoa(nrElemCentrate, nrElemCentrateChar, 10);
+        itoa(nrElemMutate, nrElemMutateChar, 10);
+
+        //le desenez
+        outtextxy(desenCord.x+latura/2-16, desenCord.y+latura*linie+latura/2-18, nrElemCentrateChar);
+        outtextxy(desenCord.x+latura+latura/2-16, desenCord.y+latura*linie+latura/2-18, nrElemMutateChar);
+
+
+        //daca s-a terminat jocul, stop.
+        if(suntEgale(cifru, (matCifru[linie]+2))){
+
+            cleardevice();
+            outtextxy(getmaxx()/2-100, 200, "FELICITARI");
+            Sleep(3000);
+            gataPlayerVsPlayer=1;
+
+            //trimite semnal catre celalalt client ca jocu e gata.
+            strcpy(mesajDeTrimis, "1");
+            result_send = send(client, mesajDeTrimis, (int)strlen(mesajDeTrimis), 0);
+
+
+            cleardevice();
+            initDesenMenu();
+
+            ///compara scorurile sa vezi cine a castigat.
+            ///ASTA E VARIANTA CARE CASTIGA
+            ///MAI REPEDE, NU CEL CARE CASTIGA DIN CELE MAI PUTINE MISCARI.
+        }
+        else{
+
+            //updatez pozitia si trec la urmatoarea linie
+            pozCifra=2;
+
+            linie++;
+            //pregatesc noul teren pt urmatoarea linie.
+            for(int j=0; j<7; ++j){
+                rectangle(desenCord.x+latura*j, desenCord.y+latura*linie,
+                           desenCord.x+latura*(j+1), desenCord.y+latura*(linie+1));
+            }
+
+        }
+    }
+
+    //daca butonul este apasat
+    if(ismouseclick(WM_LBUTTONDOWN)){
+        //eliberam "mouse"-ul. asa facea proful, am vazut si am scris la fel si a mers.
+        clearmouseclick(WM_LBUTTONDOWN);
+
+        //retinem coordonatele mouse-ului unde a dat click.
+        CORD mouse;
+        mouse.x=mousex();
+        mouse.y=mousey();
+
+        //daca este apasata vreo sageata.
+
+        if(isButonClicked(mouse, upArrow)){
+            //scrollul trece pe minus pentru a updata desenCord.
+            scroll=-abs(scroll);
+
+            //stergere
+            setcolor(BLACK);
+
+            //linia 0
+            outtextxy(desenCord.x+latura/2-16, desenCord.y+latura/2-18, "C");
+            outtextxy(desenCord.x+latura+latura/2-16, desenCord.y+latura/2-18, "M");
+
+            for(int linieTemp=-80; linieTemp<=5; ++linieTemp){
+                rectangle(desenCord.x, desenCord.y+linieTemp*latura,
+                      desenCord.x+latura, desenCord.y+(linieTemp+1)*latura);
+                rectangle(desenCord.x+latura, desenCord.y+linieTemp*latura,
+                      desenCord.x+latura*2, desenCord.y+(linieTemp+1)*latura);
+            }
+
+            //restul liniilor
+            for(int i=1; i<=linie; ++i)
+                for(int j=0; j<7; ++j){
+                    rectangle(desenCord.x+latura*j, desenCord.y+latura*i,
+                              desenCord.x+latura*(j+1), desenCord.y+latura*(i+1));
+                    char *cifra;
+                    cifra=new char[5];
+                    itoa(matCifru[i][j], cifra, 10);
+                    outtextxy(desenCord.x+latura*j+latura/2-16, desenCord.y+latura*i+latura/2-18, cifra);
+                }
+
+            //update la coordonata desenului pe y.
+            desenCord.y+=scroll;
+
+            //desenare la loc.
+            setcolor(WHITE);
+
+            //linia 0
+            outtextxy(desenCord.x+latura/2-16, desenCord.y+latura/2-18, "C");
+            outtextxy(desenCord.x+latura+latura/2-16, desenCord.y+latura/2-18, "M");
+
+            rectangle(desenCord.x, desenCord.y,
+                      desenCord.x+latura, desenCord.y+latura);
+            rectangle(desenCord.x+latura, desenCord.y,
+                      desenCord.x+latura*2, desenCord.y+latura);
+
+            //restul liniilor
+            for(int i=1; i<=linie; ++i)
+                for(int j=0; j<7; ++j){
+                    rectangle(desenCord.x+latura*j, desenCord.y+latura*i,
+                              desenCord.x+latura*(j+1), desenCord.y+latura*(i+1));
+                    //daca sunt pe ultima linie si am numarul 0 in matrice si trebuie sa umplu patratul
+                    //in care jucatorul nu a pus un numar sau patratul cu C si M de pe ultima linie,
+                    //inseamna ca acolo trebuie sa fie gol. deci acolo nu rescriu nimic.
+                    if(i==linie && matCifru[i][j]==0 && (j>=pozCifra||j==0||j==1)){
+                    }else{
+                        char *cifra;
+                        cifra=new char[5];
+                        itoa(matCifru[i][j], cifra, 10);
+                        outtextxy(desenCord.x+latura*j+latura/2-16, desenCord.y+latura*i+latura/2-18, cifra);
+                    }
+                }
+        }
+
+        if(isButonClicked(mouse, downArrow)){
+            scroll=abs(scroll);
+
+            //stergere
+            setcolor(BLACK);
+
+            //linia 0
+            outtextxy(desenCord.x+latura/2-16, desenCord.y+latura/2-18, "C");
+            outtextxy(desenCord.x+latura+latura/2-16, desenCord.y+latura/2-18, "M");
+
+            for(int linieTemp=-80; linieTemp<=10; ++linieTemp){
+                rectangle(desenCord.x, desenCord.y+linieTemp*latura,
+                      desenCord.x+latura, desenCord.y+(linieTemp+1)*latura);
+                rectangle(desenCord.x+latura, desenCord.y+linieTemp*latura,
+                      desenCord.x+latura*2, desenCord.y+(linieTemp+1)*latura);
+            }
+
+            //restul liniilor
+            for(int i=1; i<=linie; ++i)
+                for(int j=0; j<7; ++j){
+                    rectangle(desenCord.x+latura*j, desenCord.y+latura*i,
+                              desenCord.x+latura*(j+1), desenCord.y+latura*(i+1));
+                    char *cifra;
+                    cifra=new char[5];
+                    itoa(matCifru[i][j], cifra, 10);
+                    outtextxy(desenCord.x+latura*j+latura/2-16, desenCord.y+latura*i+latura/2-18, cifra);
+                }
+
+            //update la coordonata desenului pe y.
+            desenCord.y+=scroll;
+
+            //desenare la loc.
+            setcolor(WHITE);
+
+            //linia 0
+            outtextxy(desenCord.x+latura/2-16, desenCord.y+latura/2-18, "C");
+            outtextxy(desenCord.x+latura+latura/2-16, desenCord.y+latura/2-18, "M");
+
+            rectangle(desenCord.x, desenCord.y,
+                      desenCord.x+latura, desenCord.y+latura);
+            rectangle(desenCord.x+latura, desenCord.y,
+                      desenCord.x+latura*2, desenCord.y+latura);
+
+            //restul liniilor
+            for(int i=1; i<=linie; ++i)
+                for(int j=0; j<7; ++j){
+                    rectangle(desenCord.x+latura*j, desenCord.y+latura*i,
+                              desenCord.x+latura*(j+1), desenCord.y+latura*(i+1));
+                    //daca sunt pe ultima linie si am numarul 0 in matrice si trebuie sa umplu patratul
+                    //in care jucatorul nu a pus un numar sau patratul cu C si M de pe ultima linie,
+                    //inseamna ca acolo trebuie sa fie gol. deci acolo nu rescriu nimic.
+                    if(i==linie && matCifru[i][j]==0 && (j>=pozCifra||j==0||j==1)){
+                    }else{
+                        char *cifra;
+                        cifra=new char[5];
+                        itoa(matCifru[i][j], cifra, 10);
+                        outtextxy(desenCord.x+latura*j+latura/2-16, desenCord.y+latura*i+latura/2-18, cifra);
+                    }
+                }
+        }
+
+        if(isButonClicked(mouse, exitPlayervsPlayerButon)){
+            gataPlayerVsPlayer=1;
+            cleardevice();
+            initDesenMenu();
+        }
+
+
+
+        //daca utilizatorul apasa pe unul dintre acele butoane.
+        if(isButonClicked(mouse, zero)){
+            //daca e pe prima pozitie, arata eroare
+            if(pozCifra==2){
+                blinkMessage(getmaxx()-920, 50, "APASATI ALTA CIFRA");
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+            }else{
+                //daca cifra a mai fost pusa
+                if(checkPunere(0, matCifru[linie], pozCifra-1))
+                {
+                    blinkMessage(getmaxx()-920, 50, "CIFRA A MAI FOST PUSA");
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                }
+                else
+                {
+                    //bag in matrice
+                    matCifru[linie][pozCifra]=0;
+                    //desenez
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "0");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
+            }
+        }
+        if(isButonClicked(mouse, unu)){
+            if(checkPunere(1, matCifru[linie], pozCifra-1)){
+                    blinkMessage(getmaxx()-920, 50, "CIFRA A MAI FOST PUSA");
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                }else {
+                    //bag in matrice
+                    matCifru[linie][pozCifra]=1;
+                    //desenez
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "1");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
+        }
+        if(isButonClicked(mouse, doi)){
+            if(checkPunere(2, matCifru[linie], pozCifra-1)){
+                    blinkMessage(getmaxx()-920, 50, "CIFRA A MAI FOST PUSA");
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                }else {
+                    //bag in matrice
+                    matCifru[linie][pozCifra]=2;
+                    //desenez
+                     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "2");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
+        }
+        if(isButonClicked(mouse, trei)){
+            if(checkPunere(3, matCifru[linie], pozCifra-1)){
+                    blinkMessage(getmaxx()-920, 50, "CIFRA A MAI FOST PUSA");
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                }else {
+                    //bag in matrice
+                    matCifru[linie][pozCifra]=3;
+                    //desenez
+                     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "3");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
+        }
+        if(isButonClicked(mouse, patru)){
+            if(checkPunere(4, matCifru[linie], pozCifra-1)){
+                    blinkMessage(getmaxx()-920, 50, "CIFRA A MAI FOST PUSA");
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                }else {
+                    //bag in matrice
+                    matCifru[linie][pozCifra]=4;
+                    //desenez
+                     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "4");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
+        }
+        if(isButonClicked(mouse, cinci)){
+            if(checkPunere(5, matCifru[linie], pozCifra-1)){
+                    blinkMessage(getmaxx()-920, 50, "CIFRA A MAI FOST PUSA");
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                }else {
+                    //bag in matrice
+                    matCifru[linie][pozCifra]=5;
+                    //desenez
+                     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "5");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
+        }
+        if(isButonClicked(mouse, sase)){
+            if(checkPunere(6, matCifru[linie], pozCifra-1)){
+                    blinkMessage(getmaxx()-920, 50, "CIFRA A MAI FOST PUSA");
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                }else {
+                    //bag in matrice
+                    matCifru[linie][pozCifra]=6;
+                    //desenez
+                     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "6");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
+        }
+        if(isButonClicked(mouse, sapte)){
+            if(checkPunere(7, matCifru[linie], pozCifra-1)){
+                    blinkMessage(getmaxx()-920, 50, "CIFRA A MAI FOST PUSA");
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+
+                }else {
+                    //bag in matrice
+                    matCifru[linie][pozCifra]=7;
+                    //desenez
+                     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "7");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
+        }
+        if(isButonClicked(mouse, opt)){
+            if(checkPunere(8, matCifru[linie], pozCifra-1)){
+                    blinkMessage(getmaxx()-920, 50, "CIFRA A MAI FOST PUSA");
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                }else {
+                    //bag in matrice
+                    matCifru[linie][pozCifra]=8;
+                    //desenez
+                     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "8");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
+        }
+        if(isButonClicked(mouse, noua)){
+            if(checkPunere(9, matCifru[linie], pozCifra-1)){
+                    blinkMessage(getmaxx()-920, 50, "CIFRA A MAI FOST PUSA");
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                }else {
+                    //bag in matrice
+                    matCifru[linie][pozCifra]=9;
+                    //desenez
+                     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+                    outtextxy(desenCord.x+pozCifra*latura+latura/2-16, desenCord.y+linie*latura+latura/2-18, "9");
+                    //increment pozitie cifra
+                    pozCifra++;
+                }
+            }
+        }
+}
+
 
 void playerVsPlayer(){
     //desenare auxiliary buttons
     initDesenAuxiliaryButons();
+
+    initVarPlayerVsPlayer();
+
+    initSockLibrary();
+	SOCKET client;
+
+    //conectare client la host
+	clientSocketConnect(client, HOST, PORT);
+
+	//isi dau cifrul unul altuia
+	outtextxy(120, 10, "Introduceti cifrul pentru oponent!");
+
+	//desenare linie pentru cifru.
+	for(int j=0; j<5; ++j){
+        rectangle(desenCord.x+latura*j, desenCord.y+latura*linie,
+                  desenCord.x+latura*(j+1), desenCord.y+latura*(linie+1));
+    }
+
+    //alegere cifru.
+    char *cifruAles;
+    cifruAles = new char[5];
+
+    unsigned pozCifra=0;
+
+    do{
+        updateCerereCifru(cifruAles, pozCifra);
+    }while(pozCifra<5 && !gataPlayerVsPlayer);
+
+
+    if (!gataPlayerVsPlayer){
+        cifruAles[5]='\0';
+
+        //asteptare
+        Sleep(1000);
+
+        //clear device si apoi rescriere butoane aux
+        cleardevice();
+        initDesenAuxiliaryButons();
+
+        //transmitere cifru.
+
+        int result_send, result_recv;
+
+        result_send = send(client, cifruAles, 5, 0);
+
+        //primire cifru
+        char *cifruPrimit;
+        cifruPrimit = new char[5];
+        result_recv = recv(client, cifruPrimit, 5, 0);
+        cifruPrimit[5]='\0';
+
+        //variabile
+        unsigned *cifru, *cifruMeu, nrElemCentrate, nrElemMutate, scor=0, pozCifra=2, matCifru[1000][7]={};
+
+        //fac cifrul secret primit de la oponent
+        cifru=new unsigned[5];
+        for(int i=0; i<5; ++i){
+            cifru[i]=(unsigned) (cifruPrimit[i]-'0');
+        }
+        cifruMeu=new unsigned[5];
+
+        //pun pe linia 0 din matrice cifrul secret.
+        for(int i=2; i<7; ++i)
+            matCifru[0][i]=cifru[i-2];
+
+        drawLineZeroAndPrepareTable();
+
+        //do pana cand nu e gata jocul.
+        do{
+            updatePlayerVsPlayer(client, cifru, pozCifra, matCifru);
+        }while (!gataPlayerVsPlayer && !suntEgale(cifru, (matCifru[linie]+2)));
+    }
+
+    Sleep(2000);
+    cleardevice();
+    initDesenMenu();
 }
 
  void updateInstructiuni(){
@@ -681,11 +1388,8 @@ void desenInstructiuni(){
 
      cleardevice();
      initDesenMenu();
-
-
-
-
 }
+
 void updateGame(){
 
 
@@ -701,7 +1405,7 @@ void updateGame(){
             gataGame=1;
         }
 
-        if(isButonClicked(mouse, playerVsPcButon)){
+        if(isButonClicked(mouse, singlePlayerButon)){
 
             gataPlayerVsPC=0;
             //sterg main menu
@@ -721,32 +1425,25 @@ void updateGame(){
             playerVsPlayer();
         }
 
-         if(isButonClicked(mouse, instructiuniMeniu)){
+        if(isButonClicked(mouse, instructiuniMeniu)){
             gatainstructiuni=0;
             setcolor(BLACK);
             initDesenMenu();
             desenInstructiuni();
-
         }
     }
 }
-
-
-
 
 
 int main() {
 
     initwindow(1280,1024, "Cinci Cifre", 0, 0, 0);
 
-
     initDesenMenu();
 
     do{
         updateGame();
     }while(!gataGame);
-
-
 
     closegraph();
 
