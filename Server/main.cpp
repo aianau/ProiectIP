@@ -72,7 +72,9 @@ int main(){
 
 
         }while( strcmp(inp1, "1") != 0 &&
-                strcmp(inp2, "1") != 0);
+                strcmp(inp2, "1") != 0 &&
+                strcmp(inp1, "-1") != 0 &&
+                strcmp(inp2, "-1") != 0);
         closesocket(serverSocket);
         closesocket(client1);
         closesocket(client2);

@@ -678,7 +678,8 @@ bool checkPunerePlayerVsPlayer(int cifra, char *cifruAles, unsigned pozCifra){
     return false;
 }
 
-void updateCerereCifru(char *cifruAles, unsigned &pozCifra){
+void updateCerereCifru(SOCKET &client, char *cifruAles, unsigned &pozCifra){
+
     //daca butonul este apasat
     if(ismouseclick(WM_LBUTTONDOWN)){
         //eliberam "mouse"-ul. asa facea proful, am vazut si am scris la fel si a mers.
@@ -690,6 +691,9 @@ void updateCerereCifru(char *cifruAles, unsigned &pozCifra){
         mouse.y=mousey();
 
         if(isButonClicked(mouse, exitPlayervsPlayerButon)){
+            send(client, "-1", 2, 0);
+            send(client, "0", 1, 0);
+
             cleardevice();
             initDesenMenu();
             gataPlayerVsPlayer=1;
@@ -920,6 +924,17 @@ void updatePlayerVsPlayer(SOCKET &client, unsigned *cifru, unsigned &pozCifra, u
         cleardevice();
         initDesenMenu();
         gataPlayerVsPlayer=1;
+    }
+
+    if(strcmp(mesajPrimit, "1") != 0 &&
+        strcmp(mesajPrimit, "0") !=0 &&
+        strcmp(mesajPrimit, "-1") != 0){
+            cleardevice();
+            outtextxy(getmaxx()/2-30, getmaxy()/2, "Eroare");
+            Sleep(2000);
+            cleardevice();
+            initDesenMenu();
+            gataPlayerVsPlayer=1;
     }
 
     //reinit mesaje
@@ -1343,10 +1358,11 @@ void playerVsPlayer(){
         unsigned pozCifra=0;
 
         do{
-            updateCerereCifru(cifruAles, pozCifra);
+            updateCerereCifru(client, cifruAles, pozCifra);
         }while(pozCifra<5 && !gataPlayerVsPlayer);
 
 
+        //daca totul e bine
         if (!gataPlayerVsPlayer){
             cifruAles[5]='\0';
 
@@ -1368,29 +1384,44 @@ void playerVsPlayer(){
             result_recv = recv(client, cifruPrimit, 5, 0);
             cifruPrimit[5]='\0';
 
-            //variabile
-            unsigned *cifru, *cifruMeu, nrElemCentrate, nrElemMutate, scor=0, pozCifra=2, matCifru[1000][7]={};
+            //oponentul iese din joc cand alege cifrul pt celalalt jucator
+            if(strcmp(cifruPrimit, "-1") == 0){
+                send(client, "-1", 1, 0);
+                send(client, "0", 1, 0);
 
-            //fac cifrul secret primit de la oponent
-            cifru=new unsigned[5];
-            for(int i=0; i<5; ++i){
-                cifru[i]=(unsigned) (cifruPrimit[i]-'0');
+                cleardevice();
+                outtextxy(getmaxx()/2-30, getmaxy()/2, "Oponentul a iesit din joc!");
+                Sleep(2000);
+                cleardevice();
+                initDesenMenu();
+                gataPlayerVsPlayer=1;
+            }else {
+                //variabile
+                unsigned *cifru, *cifruMeu, nrElemCentrate, nrElemMutate, scor=0, pozCifra=2, matCifru[1000][7]={};
+
+                //fac cifrul secret primit de la oponent
+                cifru=new unsigned[5];
+                for(int i=0; i<5; ++i){
+                    cifru[i]=(unsigned) (cifruPrimit[i]-'0');
+                }
+                cifruMeu=new unsigned[5];
+
+                //pun pe linia 0 din matrice cifrul secret.
+                for(int i=2; i<7; ++i)
+                    matCifru[0][i]=cifru[i-2];
+
+                drawLineZeroAndPrepareTable();
+
+                //do pana cand nu e gata jocul.
+                do{
+                    updatePlayerVsPlayer(client, cifru, pozCifra, matCifru);
+                }while (!gataPlayerVsPlayer);
             }
-            cifruMeu=new unsigned[5];
-
-            //pun pe linia 0 din matrice cifrul secret.
-            for(int i=2; i<7; ++i)
-                matCifru[0][i]=cifru[i-2];
-
-            drawLineZeroAndPrepareTable();
-
-            //do pana cand nu e gata jocul.
-            do{
-                updatePlayerVsPlayer(client, cifru, pozCifra, matCifru);
-            }while (!gataPlayerVsPlayer);
-                    // && !suntEgale(cifru, (matCifru[linie]+2)));
         }
-	} else {
+	} //daca oponentul nu exista.
+	else {
+        send(client, "-1", 2, 0);
+        send(client, "0", 1, 0);
         cleardevice();
         outtextxy(getmaxx()/2-100, getmaxy()/2, "Oponent lipsa!");
         Sleep(2000);
