@@ -71,8 +71,11 @@ int main(){
             inp2[511] = '\0';
 
 
-        }while( result_sendTo1 > 0 && result_recvFrom1 > 0 &&
-                result_sendTo2 > 0 && result_recvFrom2 > 0);
+        }while( strcmp(inp1, "1") != 0 &&
+                strcmp(inp2, "1") != 0);
+        closesocket(serverSocket);
+        closesocket(client1);
+        closesocket(client2);
     }
 
 

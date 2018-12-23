@@ -905,7 +905,17 @@ void updatePlayerVsPlayer(SOCKET &client, unsigned *cifru, unsigned &pozCifra, u
     //daca oponentul a terminat.
     if(strcmp(mesajPrimit, "1") == 0){
         cleardevice();
-        outtextxy(getmaxx()/2, getmaxy()/2, "Oponentul a castigat!");
+        outtextxy(getmaxx()/2-30, getmaxy()/2, "Oponentul a castigat!");
+        Sleep(2000);
+        cleardevice();
+        initDesenMenu();
+        gataPlayerVsPlayer=1;
+    }
+
+    //daca oponentul a iesit din joc
+    if(strcmp(mesajPrimit, "-1") == 0){
+        cleardevice();
+        outtextxy(getmaxx()/2-30, getmaxy()/2, "Oponentul a iesit din joc!");
         Sleep(2000);
         cleardevice();
         initDesenMenu();
@@ -955,16 +965,16 @@ void updatePlayerVsPlayer(SOCKET &client, unsigned *cifru, unsigned &pozCifra, u
         //daca s-a terminat jocul, stop.
         if(suntEgale(cifru, (matCifru[linie]+2))){
 
-            Sleep(500);
-            cleardevice();
-            outtextxy(getmaxx()/2, 10, "FELICITARI");
-            Sleep(3000);
-            gataPlayerVsPlayer=1;
-
             //trimite semnal catre celalalt client ca jocu e gata.
             strcpy(mesajDeTrimis, "1");
             result_send = send(client, mesajDeTrimis, (int)strlen(mesajDeTrimis), 0);
+            strcpy(mesajDeTrimis, "0");
 
+            //felicitari.
+            cleardevice();
+            outtextxy(getmaxx()/2, getmaxy()/2, "FELICITARI");
+            Sleep(3000);
+            gataPlayerVsPlayer=1;
 
             cleardevice();
             initDesenMenu();
@@ -972,9 +982,6 @@ void updatePlayerVsPlayer(SOCKET &client, unsigned *cifru, unsigned &pozCifra, u
             //compara scorurile sa vezi cine a castigat.
             ///ASTA E VARIANTA CARE CASTIGA
             ///MAI REPEDE, NU CEL CARE CASTIGA DIN CELE MAI PUTINE MISCARI.
-
-            ///prbl: la sfarsitul jocului cel care pierde ia freeze si la fel
-            ///jucatorul al carui oponent da exit ia freeze.
         }
         else{
 
@@ -1127,6 +1134,9 @@ void updatePlayerVsPlayer(SOCKET &client, unsigned *cifru, unsigned &pozCifra, u
         }
 
         if(isButonClicked(mouse, exitPlayervsPlayerButon)){
+            strcpy(mesajDeTrimis, "-1");
+            send(client, mesajDeTrimis, (int)strlen(mesajDeTrimis), 0);
+            strcpy(mesajDeTrimis, "0");
             gataPlayerVsPlayer=1;
             cleardevice();
             initDesenMenu();
@@ -1304,7 +1314,6 @@ void updatePlayerVsPlayer(SOCKET &client, unsigned *cifru, unsigned &pozCifra, u
         }
 }
 
-
 void playerVsPlayer(){
     //desenare auxiliary buttons
     initDesenAuxiliaryButons();
@@ -1315,77 +1324,79 @@ void playerVsPlayer(){
 	SOCKET client;
 
     //conectare client la host
-	clientSocketConnect(client, HOST, PORT);
+	int result_connect = clientSocketConnect(client, HOST, PORT);
 
-	//isi dau cifrul unul altuia
-	outtextxy(120, 5, "Introduceti cifrul pentru oponent!");
+	if(result_connect){
+        //isi dau cifrul unul altuia
+        outtextxy(120, 5, "Introduceti cifrul pentru oponent!");
 
-	//desenare linie pentru cifru.
-	for(int j=0; j<5; ++j){
-        rectangle(desenCord.x+latura*j, desenCord.y+latura*linie,
-                  desenCord.x+latura*(j+1), desenCord.y+latura*(linie+1));
-    }
-
-    //alegere cifru.
-    char *cifruAles;
-    cifruAles = new char[5];
-
-    unsigned pozCifra=0;
-
-    do{
-        updateCerereCifru(cifruAles, pozCifra);
-    }while(pozCifra<5 && !gataPlayerVsPlayer);
-
-
-    if (!gataPlayerVsPlayer){
-        cifruAles[5]='\0';
-
-        //asteptare
-        Sleep(1000);
-
-        //clear device si apoi rescriere butoane aux
-        cleardevice();
-        initDesenAuxiliaryButons();
-
-        //transmitere cifru.
-        int result_send, result_recv;
-
-        result_send = send(client, cifruAles, 5, 0);
-
-        //primire cifru
-        char *cifruPrimit;
-        cifruPrimit = new char[5];
-        result_recv = recv(client, cifruPrimit, 5, 0);
-        cifruPrimit[5]='\0';
-
-        //variabile
-        unsigned *cifru, *cifruMeu, nrElemCentrate, nrElemMutate, scor=0, pozCifra=2, matCifru[1000][7]={};
-
-        //fac cifrul secret primit de la oponent
-        cifru=new unsigned[5];
-        for(int i=0; i<5; ++i){
-            cifru[i]=(unsigned) (cifruPrimit[i]-'0');
+        //desenare linie pentru cifru.
+        for(int j=0; j<5; ++j){
+            rectangle(desenCord.x+latura*j, desenCord.y+latura*linie,
+                      desenCord.x+latura*(j+1), desenCord.y+latura*(linie+1));
         }
-        cifruMeu=new unsigned[5];
 
-        //pun pe linia 0 din matrice cifrul secret.
-        for(int i=2; i<7; ++i)
-            matCifru[0][i]=cifru[i-2];
+        //alegere cifru.
+        char *cifruAles;
+        cifruAles = new char[5];
 
-        drawLineZeroAndPrepareTable();
+        unsigned pozCifra=0;
 
-        //do pana cand nu e gata jocul.
         do{
-            updatePlayerVsPlayer(client, cifru, pozCifra, matCifru);
-        }while (!gataPlayerVsPlayer);
-                // && !suntEgale(cifru, (matCifru[linie]+2)));
-    }
-    ///aci e prbl ca nu imi ruleaza liniile astea de cod pentru cel pierzator.
-    ///pt castigator imi ruleaza astea da' nu imi ruleaza mesajul de win
-    Sleep(1000);
-    cleardevice();
-    Sleep(1000);
-    initDesenMenu();
+            updateCerereCifru(cifruAles, pozCifra);
+        }while(pozCifra<5 && !gataPlayerVsPlayer);
+
+
+        if (!gataPlayerVsPlayer){
+            cifruAles[5]='\0';
+
+            //asteptare
+            Sleep(1000);
+
+            //clear device si apoi rescriere butoane aux
+            cleardevice();
+            initDesenAuxiliaryButons();
+
+            //transmitere cifru.
+            int result_send, result_recv;
+
+            result_send = send(client, cifruAles, 5, 0);
+
+            //primire cifru
+            char *cifruPrimit;
+            cifruPrimit = new char[5];
+            result_recv = recv(client, cifruPrimit, 5, 0);
+            cifruPrimit[5]='\0';
+
+            //variabile
+            unsigned *cifru, *cifruMeu, nrElemCentrate, nrElemMutate, scor=0, pozCifra=2, matCifru[1000][7]={};
+
+            //fac cifrul secret primit de la oponent
+            cifru=new unsigned[5];
+            for(int i=0; i<5; ++i){
+                cifru[i]=(unsigned) (cifruPrimit[i]-'0');
+            }
+            cifruMeu=new unsigned[5];
+
+            //pun pe linia 0 din matrice cifrul secret.
+            for(int i=2; i<7; ++i)
+                matCifru[0][i]=cifru[i-2];
+
+            drawLineZeroAndPrepareTable();
+
+            //do pana cand nu e gata jocul.
+            do{
+                updatePlayerVsPlayer(client, cifru, pozCifra, matCifru);
+            }while (!gataPlayerVsPlayer);
+                    // && !suntEgale(cifru, (matCifru[linie]+2)));
+        }
+	} else {
+        cleardevice();
+        outtextxy(getmaxx()/2-100, getmaxy()/2, "Oponent lipsa!");
+        Sleep(2000);
+        cleardevice();
+        initDesenMenu();
+	}
 }
 
  void updateInstructiuni(){

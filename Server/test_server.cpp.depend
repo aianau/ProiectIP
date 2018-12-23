@@ -19,11 +19,11 @@
 	<ws2tcpip.h>
 	<iostream>
 
-1545509002 source:c:\users\andre\desktop\proiectip\server\main.cpp
+1545568530 source:c:\users\andre\desktop\proiectip\server\main.cpp
 	"functii_socket.cpp"
 	<cstring>
 
-1545419907 c:\users\andre\desktop\proiectip\server\functii_socket.cpp
+1545567896 c:\users\andre\desktop\proiectip\server\functii_socket.cpp
 	<winsock2.h>
 	<windows.h>
 	<ws2tcpip.h>
