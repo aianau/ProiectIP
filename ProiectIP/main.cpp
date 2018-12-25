@@ -215,7 +215,7 @@ void initDesenMenu(){
     initCordButon(singlePlayerButon, getmaxx()/2-190, getmaxy()/2-140, getmaxx()/2+140,  getmaxy()/2-70);
     drawButon(singlePlayerButon);
     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
-    outtextxy(singlePlayerButon.stSus.x+15, singlePlayerButon.stSus.y+10, "Player vs PC");
+    outtextxy(singlePlayerButon.stSus.x+15, singlePlayerButon.stSus.y+10, "Single Player");
 
     initCordButon(playerVsPlayerButon, getmaxx()/2-230, getmaxy()/2-250, getmaxx()/2+185,  getmaxy()/2-185);
     drawButon(playerVsPlayerButon);
@@ -268,10 +268,11 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
 
         //daca s-a terminat jocul, stop.
         if(suntEgale(cifru, (matCifru[linie]+2))){
+            cleardevice();
             outtextxy(getmaxx()-100, 100, "FELICITARI");
-            Sleep(500);
+            Sleep(3000);
             gataPlayerVsPC=1;
-            ///TODO: Enter Main Menu.
+
         }
         else{
             //updatez pozitia si trec la urmatoarea linie
@@ -1341,6 +1342,7 @@ void playerVsPlayer(){
     //conectare client la host
 	int result_connect = clientSocketConnect(client, HOST, PORT);
 
+	//daca s-a conectat cu succes
 	if(result_connect){
         //isi dau cifrul unul altuia
         outtextxy(120, 5, "Introduceti cifrul pentru oponent!");
@@ -1362,7 +1364,7 @@ void playerVsPlayer(){
         }while(pozCifra<5 && !gataPlayerVsPlayer);
 
 
-        //daca totul e bine
+        //daca totul e bine si oponentul nu a parasit jocu
         if (!gataPlayerVsPlayer){
             cifruAles[5]='\0';
 
@@ -1384,9 +1386,9 @@ void playerVsPlayer(){
             result_recv = recv(client, cifruPrimit, 5, 0);
             cifruPrimit[5]='\0';
 
-            //oponentul iese din joc cand alege cifrul pt celalalt jucator
+            //oponentul iese din joc cand alege cifrul pt jucator
             if(strcmp(cifruPrimit, "-1") == 0){
-                send(client, "-1", 1, 0);
+                send(client, "-1", 2, 0);
                 send(client, "0", 1, 0);
 
                 cleardevice();
@@ -1423,7 +1425,7 @@ void playerVsPlayer(){
         send(client, "-1", 2, 0);
         send(client, "0", 1, 0);
         cleardevice();
-        outtextxy(getmaxx()/2-100, getmaxy()/2, "Oponent lipsa!");
+        outtextxy(getmaxx()/2-100, getmaxy()/2, "Conectare esuata!");
         Sleep(2000);
         cleardevice();
         initDesenMenu();
