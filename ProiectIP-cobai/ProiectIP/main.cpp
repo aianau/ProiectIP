@@ -20,7 +20,7 @@ struct BUTON
 };
 BUTON upArrow, downArrow;
 BUTON zero, unu, doi, trei, patru, cinci, sase, sapte, opt, noua;
-BUTON exitMenuButon, playerVsPcButon, playerVsPlayerButon, exitPlayerVsPcButon, exitPlayervsPlayerButon, deleteNumberButon, instructiuniMeniuButon, exitinstructiuni, setariJocButon,exitSetariButon;
+BUTON exitMenuButon, playerVsPcButon, playerVsPlayerButon, exitPlayerVsPcButon, exitPlayervsPlayerButon, deleteNumberButon, instructiuniMeniuButon, exitinstructiuni, setariJocButon,exitSetariButon,scorButon;
 BUTON clasicButon, popButon, folkButon, jazButon, rockButon,popularButon, opresteMuzicButon,pornesteMuzicaButon;
 unsigned latura,  latime, linie;
 unsigned gataPlayerVsPC, gataPlayerVsPlayer, gataGame, gataInstructiuni, gataSetari;
@@ -110,7 +110,7 @@ void initDesenAuxiliaryButons()
 
     drawScrollArrows();
 
-    initCordButon(deleteNumberButon,30, getmaxy()/2-50, 340, getmaxy()/2+5);
+    initCordButon(deleteNumberButon,60, getmaxy()/2-150, 350, getmaxy()/2-90);
     drawButon(deleteNumberButon);
     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
     outtextxy(deleteNumberButon.stSus.x+13, deleteNumberButon.stSus.y+10, "Sterge Cifra");
@@ -118,11 +118,26 @@ void initDesenAuxiliaryButons()
     //coordonate butoane cu numere si desenarea lor.
     drawGUIInputNumber();
 
+    initCordButon(opresteMuzicButon,30, getmaxy()/2-30, 380, getmaxy()/2+30);
+    drawButon(opresteMuzicButon);
+    outtextxy(opresteMuzicButon.stSus.x+10,opresteMuzicButon.stSus.y+12, "Opreste Muzica");
+
     //coordonata btn exitPlayerVsPcButon
-    initCordButon(exitPlayerVsPcButon, 30, getmaxy()/2+100, 350, getmaxy()/2+160);
+    initCordButon(exitPlayerVsPcButon, 40, getmaxy()/2+100, 365, getmaxy()/2+160);
     drawButon(exitPlayerVsPcButon);
     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
     outtextxy(exitPlayerVsPcButon.stSus.x+10, exitPlayerVsPcButon.stSus.y+10, "To Main Menu");
+
+    setcolor(BLACK);
+    initCordButon(scorButon, getmaxx()/2+390,  getmaxy()/2-400, getmaxx()/2+550,getmaxy()/2-445 );
+    drawButon(scorButon);
+    setcolor(GREEN);
+    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
+    outtextxy(scorButon.stSus.x+15, scorButon.stSus.y-38, "Scor: 0 ");
+    setcolor(WHITE);
+
+
+
 }
 
 bool suntEgale(unsigned *cifru, unsigned *cifru1)
@@ -224,17 +239,17 @@ void initDesenMenu()
     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
     outtextxy(exitMenuButon.stSus.x+20, exitMenuButon.stSus.y+10, "Exit");
 
-    initCordButon(playerVsPcButon, getmaxx()/2-190, getmaxy()/2-240, getmaxx()/2+140,  getmaxy()/2-170);
+    initCordButon(playerVsPcButon, getmaxx()/2-190, getmaxy()/2-240, getmaxx()/2+140,  getmaxy()/2-167);
     drawButon(playerVsPcButon);
     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
     outtextxy(playerVsPcButon.stSus.x+15, playerVsPcButon.stSus.y+10, "Player vs PC");
 
-    initCordButon(playerVsPlayerButon, getmaxx()/2-230, getmaxy()/2-350, getmaxx()/2+185,  getmaxy()/2-285);
+    initCordButon(playerVsPlayerButon, getmaxx()/2-230, getmaxy()/2-350, getmaxx()/2+185,  getmaxy()/2-280);
     drawButon(playerVsPlayerButon);
     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
     outtextxy(playerVsPlayerButon.stSus.x+20, playerVsPlayerButon.stSus.y+7,"Player vs Player");
 
-    initCordButon(instructiuniMeniuButon, getmaxx()/2-160, getmaxy()/2-30, getmaxx()/2+118, getmaxy()/2+30);
+    initCordButon(instructiuniMeniuButon, getmaxx()/2-160, getmaxy()/2-30, getmaxx()/2+118, getmaxy()/2+40);
     drawButon(instructiuniMeniuButon);
     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
     outtextxy(instructiuniMeniuButon.stSus.x+13,instructiuniMeniuButon.stSus.y+5, "Instructiuni");
@@ -242,7 +257,7 @@ void initDesenMenu()
     initCordButon(setariJocButon, getmaxx()/2-160, getmaxy()/2-130, getmaxx()/2+118, getmaxy()/2-60);
     drawButon(setariJocButon);
     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
-    outtextxy(setariJocButon.stSus.x+13,setariJocButon.stSus.y+2, "Setari Joc");
+    outtextxy(setariJocButon.stSus.x+18,setariJocButon.stSus.y+8, "Setari Joc");
 }
 
 //acest update va fi constant. gandeste ca va rula la infinit
@@ -308,6 +323,22 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                           desenCord.x+latura*(j+1), desenCord.y+latura*(linie+1));
             }
 
+                if(linie>=0)
+                {
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
+                    setcolor(GREEN);
+                    for( int cifraScor=0; cifraScor<10000; ++cifraScor)
+                        {
+                            char *cifraScorChar;
+                            cifraScorChar = new char[5];
+                            cifraScorChar = itoa(cifraScor, cifraScorChar, 10);
+                            if(linie-2 == cifraScor-1)
+                                outtextxy(scorButon.stSus.x+115, scorButon.stSus.y-35, cifraScorChar);
+                        }
+
+                }
+
+                setcolor(WHITE);
         }
     }
 
@@ -381,8 +412,9 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                     //in care jucatorul nu a pus un numar sau patratul cu C si M de pe ultima linie,
                     //inseamna ca acolo trebuie sa fie gol. deci acolo nu rescriu nimic.
                     if(i==linie && matCifru[i][j]==0 && (j>=pozCifra||j==0||j==1))
-                    {
-                    }
+                        {
+
+                        }
                     else
                     {
                         char *cifra;
@@ -405,12 +437,12 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
             outtextxy(desenCord.x+latura+latura/2-16, desenCord.y+latura/2-18, "M");
 
             for(int linieTemp=-80; linieTemp<=10; ++linieTemp)
-            {
-                rectangle(desenCord.x, desenCord.y+linieTemp*latura,
-                          desenCord.x+latura, desenCord.y+(linieTemp+1)*latura);
-                rectangle(desenCord.x+latura, desenCord.y+linieTemp*latura,
-                          desenCord.x+latura*2, desenCord.y+(linieTemp+1)*latura);
-            }
+                {
+                    rectangle(desenCord.x, desenCord.y+linieTemp*latura,
+                              desenCord.x+latura, desenCord.y+(linieTemp+1)*latura);
+                    rectangle(desenCord.x+latura, desenCord.y+linieTemp*latura,
+                              desenCord.x+latura*2, desenCord.y+(linieTemp+1)*latura);
+                }
 
             //restul liniilor
             for(int i=1; i<=linie; ++i)
@@ -449,8 +481,9 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                     //in care jucatorul nu a pus un numar sau patratul cu C si M de pe ultima linie,
                     //inseamna ca acolo trebuie sa fie gol. deci acolo nu rescriu nimic.
                     if(i==linie && matCifru[i][j]==0 && (j>=pozCifra||j==0||j==1))
-                    {
-                    }
+                        {
+
+                        }
                     else
                     {
                         char *cifra;
@@ -679,6 +712,10 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                 pozCifra++;
             }
         }
+        if(isButonClicked(mouse,opresteMuzicButon))
+            {
+                PlaySound(NULL, 0, 0);
+            }
     }
 }
 
@@ -919,6 +956,7 @@ void updateSetari()
            }
            if(isButonClicked(mouse,exitSetariButon))
            {
+
               setcolor(BLACK);
               settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
               outtextxy(887,610, "To main meniu");
@@ -1063,6 +1101,7 @@ void desenSetari()
         updateSetari();
     }
     while (!gataSetari);
+    setcolor(WHITE);
 
     cleardevice();
     initDesenMenu();
