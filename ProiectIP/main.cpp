@@ -23,10 +23,10 @@ struct BUTON{
 };
 BUTON upArrow, downArrow;
 BUTON zero, unu, doi, trei, patru, cinci, sase, sapte, opt, noua;
-BUTON exitMenuButon, singlePlayerButon, playerVsPlayerButon, exitSinglePlayerButon, exitPlayervsPlayerButon, deleteNumber, instructiuniMeniu, exitinstructiuni;
-
+BUTON exitMenuButon, singlePlayerButon, playerVsPlayerButon, exitSinglePlayerButon, exitPlayervsPlayerButon, deleteNumber, instructiuniMeniu, exitinstructiuni,setariJocButon,exitSetariButon,scorButon;
+BUTON clasicButon, popButon, folkButon, jazButon, rockButon,popularButon, opresteMuzicButon,pornesteMuzicaButon;
 unsigned latura,  latime, linie;
-unsigned gataPlayerVsPC, gataPlayerVsPlayer, gataGame, gatainstructiuni;
+unsigned gataPlayerVsPC, gataPlayerVsPlayer, gataGame, gatainstructiuni,gataSetari;
 unsigned scor;
 
 int scroll;
@@ -105,7 +105,7 @@ void initDesenAuxiliaryButons(){
 
     drawScrollArrows();
 
-    initCordButon(deleteNumber ,30, getmaxy()/2-50, 340, getmaxy()/2+5);
+    initCordButon(deleteNumber ,60, getmaxy()/2-150, 350, getmaxy()/2-90);
     drawButon(deleteNumber);
     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
     outtextxy(deleteNumber.stSus.x+13, deleteNumber.stSus.y+10, "Sterge Cifra");
@@ -113,12 +113,24 @@ void initDesenAuxiliaryButons(){
     //coordonate butoane cu numere si desenarea lor.
     drawGUIInputNumber();
 
+    initCordButon(opresteMuzicButon,30, getmaxy()/2-30, 380, getmaxy()/2+30);
+    drawButon(opresteMuzicButon);
+    outtextxy(opresteMuzicButon.stSus.x+10,opresteMuzicButon.stSus.y+12, "Opreste Muzica");
+
     //coordonata btn exitSinglePlayerButon
     initCordButon(exitSinglePlayerButon, 30, getmaxy()/2+100, 350, getmaxy()/2+160);
     initCordButon(exitPlayervsPlayerButon, 30, getmaxy()/2+100, 350, getmaxy()/2+160);
     drawButon(exitSinglePlayerButon);
     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
     outtextxy(exitSinglePlayerButon.stSus.x+10, exitSinglePlayerButon.stSus.y+10, "To Main Menu");
+
+    setcolor(BLACK);
+    initCordButon(scorButon, getmaxx()/2+390,  getmaxy()/2-400, getmaxx()/2+550,getmaxy()/2-445 );
+    drawButon(scorButon);
+    setcolor(GREEN);
+    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
+    outtextxy(scorButon.stSus.x+15, scorButon.stSus.y-38, "Scor: 0 ");
+    setcolor(WHITE);
 }
 
 bool suntEgale(unsigned *cifru, unsigned *cifru1){
@@ -212,15 +224,20 @@ void initDesenMenu(){
     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
     outtextxy(exitMenuButon.stSus.x+20, exitMenuButon.stSus.y+10, "Exit");
 
-    initCordButon(singlePlayerButon, getmaxx()/2-190, getmaxy()/2-140, getmaxx()/2+140,  getmaxy()/2-70);
+    initCordButon(singlePlayerButon, getmaxx()/2-190, getmaxy()/2-240, getmaxx()/2+140,  getmaxy()/2-167);
     drawButon(singlePlayerButon);
     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
-    outtextxy(singlePlayerButon.stSus.x+15, singlePlayerButon.stSus.y+10, "Single Player");
+    outtextxy(singlePlayerButon.stSus.x+5, singlePlayerButon.stSus.y+10, "Single Player");
 
-    initCordButon(playerVsPlayerButon, getmaxx()/2-230, getmaxy()/2-250, getmaxx()/2+185,  getmaxy()/2-185);
+    initCordButon(playerVsPlayerButon, getmaxx()/2-230, getmaxy()/2-350, getmaxx()/2+185,  getmaxy()/2-280);
     drawButon(playerVsPlayerButon);
     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
     outtextxy(playerVsPlayerButon.stSus.x+20, playerVsPlayerButon.stSus.y+7,"Player vs Player");
+
+    initCordButon(setariJocButon, getmaxx()/2-160, getmaxy()/2-130, getmaxx()/2+118, getmaxy()/2-60);
+    drawButon(setariJocButon);
+    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+    outtextxy(setariJocButon.stSus.x+18,setariJocButon.stSus.y+8, "Setari Joc");
 
     initCordButon(instructiuniMeniu, getmaxx()/2-160, getmaxy()/2-30, getmaxx()/2+118, getmaxy()/2+30);
     drawButon(instructiuniMeniu);
@@ -280,10 +297,27 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
 
             linie++;
             //pregatesc noul teren pt urmatoarea linie.
-            for(int j=0; j<7; ++j){
+            for(int j=0; j<7; ++j)
+            {
                 rectangle(desenCord.x+latura*j, desenCord.y+latura*linie,
                            desenCord.x+latura*(j+1), desenCord.y+latura*(linie+1));
             }
+                  if(linie>=0)
+                {
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
+                    setcolor(GREEN);
+                    for( int cifraScor=0; cifraScor<10000; ++cifraScor)
+                        {
+                            char *cifraScorChar;
+                            cifraScorChar = new char[5];
+                            cifraScorChar = itoa(cifraScor, cifraScorChar, 10);
+                            if(linie-2 == cifraScor-1)
+                                outtextxy(scorButon.stSus.x+115, scorButon.stSus.y-35, cifraScorChar);
+                        }
+
+                }
+
+                setcolor(WHITE);
 
         }
     }
@@ -597,6 +631,10 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                     pozCifra++;
                 }
             }
+         if(isButonClicked(mouse,opresteMuzicButon))
+            {
+                PlaySound(NULL, 0, 0);
+            }
         }
 }
 
@@ -678,7 +716,316 @@ bool checkPunerePlayerVsPlayer(int cifra, char *cifruAles, unsigned pozCifra){
             return true;
     return false;
 }
+void updateSetari()
+{
+    if(ismouseclick(WM_MOUSEMOVE))
+    {
+        clearmouseclick(WM_MOUSEMOVE);
 
+        CORD mouse;
+        mouse.x=mousex();
+        mouse.y=mousey();
+
+
+        if(isButonClicked(mouse,clasicButon ))
+        {
+                setcolor(BLACK);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+                outtextxy(60,175, "Muzica Clasica");
+
+                setcolor(GREEN);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+                outtextxy(30,175, "Muzica Clasica");
+                Sleep(500);
+                setcolor(BLACK);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+                outtextxy(30,175, "Muzica Clasica");
+                setcolor(GREEN);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
+                outtextxy(60,175, "Muzica Clasica");
+
+        }
+
+        if(isButonClicked(mouse,rockButon ))
+        {
+                setcolor(BLACK);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+                outtextxy(515,175, "Muzica Rock");
+
+                setcolor(GREEN);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+                outtextxy(495,175, "Muzica Rock");
+                Sleep(500);
+                setcolor(BLACK);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+                outtextxy(495,175, "Muzica Rock");
+                setcolor(GREEN);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
+                outtextxy(530,175, "Muzica Rock");
+        }
+
+          if(isButonClicked(mouse,jazButon ))
+          {
+
+                setcolor(BLACK);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+                outtextxy(900,175, "Muzica Jazz");
+
+                setcolor(GREEN);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+                outtextxy(900,175, "Muzica Jazz");
+                Sleep(500);
+                setcolor(BLACK);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+                outtextxy(900,175, "Muzica Jazz");
+                setcolor(GREEN);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
+                outtextxy(930,175, "Muzica Jazz");
+
+          }
+
+          if(isButonClicked(mouse,popButon ))
+          {
+                setcolor(BLACK);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+                outtextxy(50,425, "Muzica Pop");
+
+                setcolor(GREEN);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+                outtextxy(50,425, "Muzica Pop");
+                Sleep(500);
+                setcolor(BLACK);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+                outtextxy(50,425, "Muzica Pop");
+                setcolor(GREEN);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
+                outtextxy(80,425, "Muzica Pop");
+          }
+
+          if(isButonClicked(mouse,folkButon ))
+          {
+                setcolor(BLACK);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+                outtextxy(500,425, "Muzica Folk");
+
+                setcolor(GREEN);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+                outtextxy(500,425, "Muzica Folk");
+                Sleep(500);
+                setcolor(BLACK);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+                outtextxy(500,425, "Muzica Folk");
+                setcolor(GREEN);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
+                outtextxy(540,425, "Muzica Folk");
+              }
+
+           if(isButonClicked(mouse,popularButon))
+           {
+                setcolor(BLACK);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+                outtextxy(850,425, "Muzica Populara");
+
+                setcolor(GREEN);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+                outtextxy(850,425, "Muzica Populara");
+                Sleep(500);
+                setcolor(BLACK);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+                outtextxy(850,425, "Muzica Populara");
+                setcolor(GREEN);
+                settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
+                outtextxy(900,425, "Muzica Populara");
+           }
+
+           if(isButonClicked(mouse,opresteMuzicButon))
+           {
+               setcolor(BLACK);
+               settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
+               outtextxy(68,607, "Opreste Muzica");
+
+               setcolor(GREEN);
+               settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+               outtextxy(40,590, "Opreste Muzica");
+               Sleep(500);
+               setcolor(BLACK);
+               outtextxy(40,590, "Opreste Muzica");
+               setcolor(GREEN);
+               settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
+               outtextxy(68,607, "Opreste Muzica");
+
+
+           }
+
+           if(isButonClicked(mouse,pornesteMuzicaButon))
+           {
+               setcolor(BLACK);
+               settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
+               outtextxy(470,607, "Porneste Muzica");
+
+               setcolor(GREEN);
+               settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+               outtextxy(430,590, "Porneste Muzica");
+               Sleep(500);
+               setcolor(BLACK);
+               settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+               outtextxy(430,590, "Porneste Muzica");
+               setcolor(GREEN);
+               settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
+               outtextxy(470,607, "Porneste Muzica");
+
+           }
+           if(isButonClicked(mouse,exitSetariButon))
+           {
+
+              setcolor(BLACK);
+              settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
+              outtextxy(887,610, "To main meniu");
+
+              setcolor(GREEN);
+              settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+              outtextxy(847,590, "To main meniu");
+              Sleep(500);
+              setcolor(BLACK);
+              settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 6);
+              outtextxy(847,590, "To main meniu");
+              setcolor(GREEN);
+              settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
+              outtextxy(887,610, "To main meniu");
+
+           }
+
+    }
+    else if(ismouseclick(WM_LBUTTONDOWN))
+    {
+        clearmouseclick(WM_LBUTTONDOWN);
+
+        CORD mouse;
+        mouse.x=mousex();
+        mouse.y=mousey();
+
+        if(isButonClicked(mouse, exitSetariButon))
+            {
+                gataSetari=1;
+                initDesenMenu();
+            }
+        if(isButonClicked(mouse,clasicButon))
+            {
+               PlaySound(TEXT("clasicmusic.wav"),NULL, SND_FILENAME | SND_ASYNC);
+
+            }
+        if(isButonClicked(mouse,rockButon))
+            {
+               PlaySound(TEXT("rockmusic1.wav"),NULL, SND_FILENAME | SND_ASYNC);
+
+            }
+        if(isButonClicked(mouse,jazButon))
+            {
+               PlaySound(TEXT("jazzmusic.wav"),NULL, SND_FILENAME | SND_ASYNC);
+
+            }
+        if(isButonClicked(mouse,popButon))
+            {
+               PlaySound(TEXT("popmusic.wav"),NULL, SND_FILENAME | SND_ASYNC);
+
+            }
+        if(isButonClicked(mouse,folkButon))
+            {
+               PlaySound(TEXT("folkmusic.wav"),NULL, SND_FILENAME | SND_ASYNC);
+
+            }
+        if(isButonClicked(mouse,popularButon))
+            {
+               PlaySound(TEXT("popularamusic.wav"),NULL, SND_FILENAME | SND_ASYNC);
+
+            }
+        if(isButonClicked(mouse,opresteMuzicButon))
+            {
+                PlaySound(NULL, 0, 0);
+            }
+         if(isButonClicked(mouse,pornesteMuzicaButon))
+         {
+             PlaySound(TEXT("clasicmusic.wav"),NULL, SND_FILENAME | SND_ASYNC);
+         }
+
+      }
+
+    }
+
+    void desenSetari()
+{
+    setcolor(BLACK);
+    initCordButon(clasicButon,50,20,350,220);
+    drawButon(clasicButon);
+    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
+    setcolor(GREEN);
+    outtextxy(60,175, "Muzica Clasica");
+    readimagefile("clasic.jpg",50,20,350,150);
+
+    setcolor(BLACK);
+    initCordButon(rockButon,500,20,800,220);
+    drawButon(rockButon);
+    setcolor(GREEN);
+    outtextxy(530,175, "Muzica Rock");
+    readimagefile("rock.jpg",500,20,800,150);
+
+    setcolor(BLACK);
+    initCordButon(jazButon,900,20,1200,220);
+    drawButon(jazButon);
+    setcolor(GREEN);
+    outtextxy(930,175, "Muzica Jazz");
+    readimagefile("jazz.jpg",900,20,1200,150);
+
+    setcolor(BLACK);
+    initCordButon(popButon,50,250,350,470);
+    drawButon(popButon);
+    setcolor(GREEN);
+    outtextxy(80,425, "Muzica Pop");
+    readimagefile("pop.jpg",50,250,350,400);
+
+    setcolor(BLACK);
+    initCordButon(folkButon,500,250,800,470);
+    drawButon(folkButon);
+    setcolor(GREEN);
+    outtextxy(540,425, "Muzica Folk");
+    readimagefile("folk.jpg",500,250,800,400);
+
+    setcolor(BLACK);
+    initCordButon(popularButon,900,250,1200,470);
+    drawButon(popularButon);
+    setcolor(GREEN);
+    outtextxy(900,425, "Muzica Populara");
+    readimagefile("popular.jpg",900,250,1200,400);
+
+    setcolor(BLACK);
+    initCordButon(opresteMuzicButon,50, 600, 360,650);
+    drawButon(opresteMuzicButon);
+    setcolor(GREEN);
+    outtextxy(68,607, "Opreste Muzica");
+
+    setcolor(BLACK);
+    initCordButon(pornesteMuzicaButon,450, 600, 790,650);
+    drawButon(pornesteMuzicaButon);
+    setcolor(GREEN);
+    outtextxy(470,607, "Porneste Muzica");
+
+    setcolor(BLACK);
+    initCordButon(exitSetariButon,870, 600, 1160,650);
+    drawButon(exitSetariButon);
+    setcolor(GREEN);
+    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
+    outtextxy(887,610, "To main meniu");
+
+    do
+    {
+        updateSetari();
+    }
+    while (!gataSetari);
+    setcolor(WHITE);
+
+    cleardevice();
+    initDesenMenu();
+}
 void updateCerereCifru(SOCKET &client, char *cifruAles, unsigned &pozCifra){
 
     //daca butonul este apasat
@@ -1475,8 +1822,8 @@ void desenInstructiuni(){
 void updateGame(){
 
 
-   if(ismouseclick(WM_LBUTTONDBLCLK)){
-        clearmouseclick(WM_LBUTTONDBLCLK);
+   if(ismouseclick(WM_LBUTTONDOWN)){
+        clearmouseclick(WM_LBUTTONDOWN);
 
         CORD mouse;
         mouse.x=mousex();
@@ -1512,6 +1859,15 @@ void updateGame(){
             setcolor(BLACK);
             initDesenMenu();
             desenInstructiuni();
+        }
+        if(isButonClicked(mouse,setariJocButon ))
+        {
+            gataSetari=0;
+            setcolor(BLACK);
+            initDesenMenu();
+            desenSetari();
+
+
         }
     }
 }
