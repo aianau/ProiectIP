@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1545575463 source:c:\users\andre\desktop\proiectip\proiectip\main.cpp
+1546014203 source:c:\users\andre\desktop\proiectip\proiectip\main.cpp
 	"functii_socket.cpp"
 	<iostream>
 	<stdlib.h>
@@ -30,7 +30,7 @@
 	<cmath>
 	<conio.h>
 
-1545570905 c:\users\andre\desktop\proiectip\proiectip\functii_socket.cpp
+1546014059 c:\users\andre\desktop\proiectip\proiectip\functii_socket.cpp
 	<winsock2.h>
 	<windows.h>
 	<ws2tcpip.h>
@@ -48,6 +48,12 @@
 	<conio.h>
 
 1546007168 e:\ip-proiect\cobai\proiectip\proiectip\functii_socket.cpp
+	<winsock2.h>
+	<windows.h>
+	<ws2tcpip.h>
+	<iostream>
+
+1546014059 source:c:\users\andre\desktop\proiectip\proiectip\functii_socket.cpp
 	<winsock2.h>
 	<windows.h>
 	<ws2tcpip.h>

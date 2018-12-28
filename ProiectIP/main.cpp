@@ -1822,8 +1822,8 @@ void desenInstructiuni(){
 void updateGame(){
 
 
-   if(ismouseclick(WM_LBUTTONDBLCLK)){
-        clearmouseclick(WM_LBUTTONDBLCLK);
+   if(ismouseclick(WM_LBUTTONDOWN)){
+        clearmouseclick(WM_LBUTTONDOWN);
 
         CORD mouse;
         mouse.x=mousex();
