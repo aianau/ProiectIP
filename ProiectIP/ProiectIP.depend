@@ -36,3 +36,20 @@
 	<ws2tcpip.h>
 	<iostream>
 
+1546008698 source:e:\ip-proiect\cobai\proiectip\proiectip\main.cpp
+	"functii_socket.cpp"
+	<iostream>
+	<stdlib.h>
+	<time.h>
+	<cstdio>
+	<cstring>
+	<winbgim.h>
+	<cmath>
+	<conio.h>
+
+1546007168 e:\ip-proiect\cobai\proiectip\proiectip\functii_socket.cpp
+	<winsock2.h>
+	<windows.h>
+	<ws2tcpip.h>
+	<iostream>
+
