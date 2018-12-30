@@ -718,7 +718,61 @@ bool checkPunerePlayerVsPlayer(int cifra, char *cifruAles, unsigned pozCifra){
 }
 void updateSetari()
 {
-    if(ismouseclick(WM_MOUSEMOVE))
+    if(ismouseclick(WM_LBUTTONDOWN))
+    {
+        clearmouseclick(WM_LBUTTONDOWN);
+
+        CORD mouse;
+        mouse.x=mousex();
+        mouse.y=mousey();
+
+        if(isButonClicked(mouse, exitSetariButon))
+            {
+                gataSetari=1;
+                initDesenMenu();
+            }
+        if(isButonClicked(mouse,clasicButon))
+            {
+               PlaySound(TEXT("clasicmusic.wav"),NULL, SND_FILENAME | SND_ASYNC);
+
+            }
+        if(isButonClicked(mouse,rockButon))
+            {
+               PlaySound(TEXT("rockmusic1.wav"),NULL, SND_FILENAME | SND_ASYNC);
+
+            }
+        if(isButonClicked(mouse,jazButon))
+            {
+               PlaySound(TEXT("jazzmusic.wav"),NULL, SND_FILENAME | SND_ASYNC);
+
+            }
+        if(isButonClicked(mouse,popButon))
+            {
+               PlaySound(TEXT("popmusic.wav"),NULL, SND_FILENAME | SND_ASYNC);
+
+            }
+        if(isButonClicked(mouse,folkButon))
+            {
+               PlaySound(TEXT("folkmusic.wav"),NULL, SND_FILENAME | SND_ASYNC);
+
+            }
+        if(isButonClicked(mouse,popularButon))
+            {
+               PlaySound(TEXT("popularamusic.wav"),NULL, SND_FILENAME | SND_ASYNC);
+
+            }
+        if(isButonClicked(mouse,opresteMuzicButon))
+            {
+                PlaySound(NULL, 0, 0);
+            }
+         if(isButonClicked(mouse,pornesteMuzicaButon))
+         {
+             PlaySound(TEXT("clasicmusic.wav"),NULL, SND_FILENAME | SND_ASYNC);
+         }
+
+      }
+
+    else if(ismouseclick(WM_MOUSEMOVE))
     {
         clearmouseclick(WM_MOUSEMOVE);
 
@@ -896,59 +950,6 @@ void updateSetari()
            }
 
     }
-    else if(ismouseclick(WM_LBUTTONDOWN))
-    {
-        clearmouseclick(WM_LBUTTONDOWN);
-
-        CORD mouse;
-        mouse.x=mousex();
-        mouse.y=mousey();
-
-        if(isButonClicked(mouse, exitSetariButon))
-            {
-                gataSetari=1;
-                initDesenMenu();
-            }
-        if(isButonClicked(mouse,clasicButon))
-            {
-               PlaySound(TEXT("clasicmusic.wav"),NULL, SND_FILENAME | SND_ASYNC);
-
-            }
-        if(isButonClicked(mouse,rockButon))
-            {
-               PlaySound(TEXT("rockmusic1.wav"),NULL, SND_FILENAME | SND_ASYNC);
-
-            }
-        if(isButonClicked(mouse,jazButon))
-            {
-               PlaySound(TEXT("jazzmusic.wav"),NULL, SND_FILENAME | SND_ASYNC);
-
-            }
-        if(isButonClicked(mouse,popButon))
-            {
-               PlaySound(TEXT("popmusic.wav"),NULL, SND_FILENAME | SND_ASYNC);
-
-            }
-        if(isButonClicked(mouse,folkButon))
-            {
-               PlaySound(TEXT("folkmusic.wav"),NULL, SND_FILENAME | SND_ASYNC);
-
-            }
-        if(isButonClicked(mouse,popularButon))
-            {
-               PlaySound(TEXT("popularamusic.wav"),NULL, SND_FILENAME | SND_ASYNC);
-
-            }
-        if(isButonClicked(mouse,opresteMuzicButon))
-            {
-                PlaySound(NULL, 0, 0);
-            }
-         if(isButonClicked(mouse,pornesteMuzicaButon))
-         {
-             PlaySound(TEXT("clasicmusic.wav"),NULL, SND_FILENAME | SND_ASYNC);
-         }
-
-      }
 
     }
 
