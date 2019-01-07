@@ -1257,6 +1257,10 @@ void updateCerereCifru(SOCKET &client, char *cifruAles, unsigned &pozCifra){
                     pozCifra++;
                 }
         }
+        if(isButonClicked(mouse,opresteMuzicButon))
+            {
+                PlaySound(NULL, 0, 0);
+            }
     }
 }
 
