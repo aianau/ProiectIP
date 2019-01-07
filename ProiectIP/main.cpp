@@ -124,6 +124,31 @@ void initDesenAuxiliaryButons(){
     settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
     outtextxy(exitSinglePlayerButon.stSus.x+10, exitSinglePlayerButon.stSus.y+10, "To Main Menu");
 
+
+}
+void initDesenAuxiliarySingelPlayerButons(){
+
+    drawScrollArrows();
+
+    initCordButon(deleteNumber ,60, getmaxy()/2-150, 350, getmaxy()/2-90);
+    drawButon(deleteNumber);
+    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+    outtextxy(deleteNumber.stSus.x+13, deleteNumber.stSus.y+10, "Sterge Cifra");
+
+    //coordonate butoane cu numere si desenarea lor.
+    drawGUIInputNumber();
+
+    initCordButon(opresteMuzicButon,30, getmaxy()/2-30, 380, getmaxy()/2+30);
+    drawButon(opresteMuzicButon);
+    outtextxy(opresteMuzicButon.stSus.x+10,opresteMuzicButon.stSus.y+12, "Opreste Muzica");
+
+    //coordonata btn exitSinglePlayerButon
+    initCordButon(exitSinglePlayerButon, 30, getmaxy()/2+100, 350, getmaxy()/2+160);
+    initCordButon(exitPlayervsPlayerButon, 30, getmaxy()/2+100, 350, getmaxy()/2+160);
+    drawButon(exitSinglePlayerButon);
+    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
+    outtextxy(exitSinglePlayerButon.stSus.x+10, exitSinglePlayerButon.stSus.y+10, "To Main Menu");
+
     setcolor(BLACK);
     initCordButon(scorButon, getmaxx()/2+390,  getmaxy()/2-400, getmaxx()/2+550,getmaxy()/2-445 );
     drawButon(scorButon);
@@ -672,7 +697,7 @@ void initDesenPlayerVsPc(){
 void playerVsPC(){
 
     //desenare auxiliary butons
-    initDesenAuxiliaryButons();
+    initDesenAuxiliarySingelPlayerButons();
 
     //desenare playerVsPC graphic.
     initDesenPlayerVsPc();
