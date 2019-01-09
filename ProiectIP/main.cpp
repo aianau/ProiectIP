@@ -153,7 +153,7 @@ void initDesenAuxiliarySingelPlayerButons(){
     initCordButon(scorButon, getmaxx()/2+390,  getmaxy()/2-400, getmaxx()/2+550,getmaxy()/2-445 );
     drawButon(scorButon);
     setcolor(GREEN);
-    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
+    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
     outtextxy(scorButon.stSus.x+15, scorButon.stSus.y-38, "Scor: 0 ");
     setcolor(WHITE);
 }
@@ -329,7 +329,7 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
             }
                   if(linie>=0)
                 {
-                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 4);
+                    settextstyle( SANS_SERIF_FONT, HORIZ_DIR, 5);
                     setcolor(GREEN);
                     for( int cifraScor=0; cifraScor<10000; ++cifraScor)
                         {
@@ -337,7 +337,7 @@ void updatePlayerVsPC(unsigned *cifru, unsigned &pozCifra, unsigned matCifru[100
                             cifraScorChar = new char[5];
                             cifraScorChar = itoa(cifraScor, cifraScorChar, 10);
                             if(linie-2 == cifraScor-1)
-                                outtextxy(scorButon.stSus.x+115, scorButon.stSus.y-35, cifraScorChar);
+                                outtextxy(scorButon.stSus.x+135, scorButon.stSus.y-35, cifraScorChar);
                         }
 
                 }
